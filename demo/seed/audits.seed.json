@@ -1,0 +1,72 @@
+[
+  {
+    "id": "seed-invoice-overdue",
+    "data": {
+      "type": "invoice",
+      "amount": 15500,
+      "currency": "USD",
+      "vendor": "TechSolutions Inc.",
+      "date": "2025-12-15",
+      "riskFlags": ["Payment overdue", "Missing penalty clause"]
+    }
+  },
+  {
+    "id": "seed-offer-A",
+    "data": {
+      "type": "offer",
+      "vendor": "TechSolutions",
+      "file": "offer_A_TechSolutions.pdf",
+      "totalPrice": 14900,
+      "currency": "USD",
+      "leadTimeDays": 21,
+      "paymentTermsDays": 60,
+      "validityDays": 7,
+      "redFlags": ["Missing penalty clause", "No GDPR/KVKK compliance", "Unclear late payment terms"]
+    }
+  },
+  {
+    "id": "seed-offer-B",
+    "data": {
+      "type": "offer",
+      "vendor": "NovaSupply",
+      "file": "offer_B_NovaSupply.pdf",
+      "totalPrice": 15500,
+      "currency": "USD",
+      "leadTimeDays": 14,
+      "paymentTermsDays": 30,
+      "validityDays": 30,
+      "penaltyClause": {
+        "exists": true,
+        "details": "0.5% per day, cap 10%",
+        "capPercent": 10
+      },
+      "kvkkGdpr": {
+        "exists": true,
+        "details": "Full compliance documentation provided"
+      }
+    }
+  },
+  {
+    "id": "seed-offer-C",
+    "data": {
+      "type": "offer",
+      "vendor": "AnkaProcure",
+      "file": "offer_C_AnkaProcure.pdf",
+      "totalPrice": 17200,
+      "currency": "USD",
+      "leadTimeDays": 10,
+      "paymentTermsDays": 15,
+      "validityDays": 45,
+      "penaltyClause": {
+        "exists": true,
+        "details": "0.3% per day, cap 5%",
+        "capPercent": 5
+      },
+      "kvkkGdpr": {
+        "exists": true,
+        "details": "Full compliance + ISO 27001 + SOC 2"
+      }
+    }
+  }
+]
+

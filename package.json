@@ -1,0 +1,21 @@
+{
+  "name": "procurepilot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ProcurePilot - Procurement audit system with Hyperledger Fabric",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "start": "pnpm --filter web start",
+    "api:dev": "pnpm --filter api dev",
+    "api:start": "pnpm --filter api start"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
+

@@ -1,0 +1,102 @@
+ProcurePilot (BD + Son Kullanıcı) Anlatımı
+
+1) Genel Bakış – Bu proje ne?
+
+ProcurePilot, tedarikçi tekliflerini (PDF) hızlı ve tutarlı şekilde kıyaslamak için tasarlanmış bir “karar destek” aracıdır.
+	•	1–3 teklif PDF’ini yüklersin
+	•	Sistem tekliflerden fiyat / termin / ödeme / ceza / KVKK-GDPR / risk işaretleri gibi bilgileri çıkarır
+	•	Teklifleri yan yana karşılaştırır, ağırlıklarla (fiyat–risk–hız) puanlar
+	•	“En iyi seçenek” önerisi verir
+	•	Ve en önemlisi: “Bu kararı neden verdik?” sorusu için audit trail üretir (sonradan denetimde gösterilebilir)
+
+Son kullanıcı için değer: Excel’de kaybolmadan 10 dakikalık işi 2 dakikaya indirip “kanıtlı karar” alırsın.
+BD için değer: “AI önerdi” değil, “AI önerdi + kanıt + iz kayıt” (güven) satarsın.
+
+⸻
+
+2) Müşterilerim kim?
+
+Son kullanıcılar
+	•	Procurement / satın alma uzmanları
+	•	Category managers
+	•	Operasyon & finans ekipleri (satın alma onayı verenler)
+
+Satın alan / içeri sokan taraf (BD gerçeği)
+	•	Finance / procurement liderleri (bütçe sahibi)
+	•	Compliance / internal audit (denetim baskısı olanlar)
+	•	IT / engineering (kurumsal entegrasyon isteyen şirketlerde)
+
+⸻
+
+3) Müşterilerim bugün buna nasıl para ve zaman harcıyor?
+
+Müşteri genelde 3 şekilde “harcıyor”:
+
+A) Excel + manuel süreç (zaman yakıyor)
+	•	PDF’lerden kopyala/yapıştır
+	•	Her tedarikçi farklı format → karşılaştırma zor
+	•	“Neden bunu seçtik?” sorusunda kanıt arama (meeting + mail + tekrar okuma)
+
+B) Büyük procurement platformları (para yakıyor + entegrasyon masrafı)
+
+Şirketler çoğunlukla “source-to-pay / procure-to-pay” platformları kullanır: SAP Ariba  ￼, Coupa  ￼, Ivalua  ￼, JAGGAER  ￼.
+Ama gerçek hayatta yine de:
+	•	teklif PDF’leri mail/drive’da kalır
+	•	“sayfa/snippet kanıt” ve “özelleştirilmiş scoring” her zaman düzgün oturmaz
+	•	ekip yeniden Excel/slide’a döner
+
+C) Contract / doküman AI araçları (komşu çözüm, aynı problem değil)
+
+CLM (contract lifecycle management) tarafında güçlü oyuncular var ama onlar “sözleşme yönetimi”ne odaklanır; RFQ teklif kıyası ayrı bir acıdır. (Yine de yatırım trendi doküman-AI pazarının sıcak olduğunu gösterir.) ContractPodAi’nin $115M yatırımı buna örnek.  ￼
+
+⸻
+
+4) Dünyada benzer çözümler var mı? Ne kadar yatırım almışlar?
+
+ProcurePilot’in “aynısı” az; ama aynı bütçeden pay alan güçlü kategoriler var:
+
+Procurement orchestration / procurement workflow (çok güçlü yatırım sinyali)
+	•	Zip, procurement tarafında $190M Series D duyurdu ve yaklaşık $2.2B valuation ile konuşuldu.  ￼
+Bu, “procurement + AI + otomasyon” alanında pazarın çok büyük olduğunu gösterir.
+
+SaaS procurement / negotiation (YC örneği)
+	•	Vendr (YC) “SaaS satın alma ve pazarlık” tarafında AI konumlandırıyor; YC sayfasında “AI negotiation agent” olarak anlatılıyor.  ￼
+Bu bize şunu söyler: “Satın alma kararını hızlandıran ve tasarruf yaratan AI ürünleri” ciddi talep görüyor.
+
+Contract / document intelligence (doküman-AI yatırımı)
+	•	ContractPodAi’nin $115M yatırımı (SoftBank VF2) dokümanlardan yapı çıkarma + risk/uyum gibi işlerin yatırım aldığını gösteriyor.  ￼
+	•	Lexion’ın Series B ($20M) de “contract ops + AI” tarafında yatırım örneği.  ￼
+
+Pazar büyüklüğüne ek sinyal (kurumsal değerleme)
+	•	Reuters, JAGGAER için olası satış değerinin ~$3B olabileceğini yazdı; bu da procurement yazılımlarının devasa kurumsal pazar olduğunu gösterir.  ￼
+
+BD çıkarımı: ProcurePilot “procurement suite” yerine geçmek zorunda değil; onların yanında “teklif kıyas + kanıt + audit trail” boşluğunu dolduran yüksek ROI’li ek modül gibi satılabilir.
+
+⸻
+
+5) YC startupları bu alanda ne yapıyor?
+	•	Vendr (YC): “SaaS satın alma/pazarlık”ta fiyat benchmark ve negotiation otomasyonu anlatıyor.  ￼
+BD için mesaj: “Procurement’ta AI ile tasarruf/karar hızlandırma” teması YC seviyesinde doğrulanmış.
+
+⸻
+
+ProcurePilot’in BD için net konumlandırması
+
+Kime satılır?
+	•	Orta-üst ölçek şirketlerde procurement lideri + finance + compliance (kararı onaylayanlar)
+	•	Teknik ekibe: “entegrasyonu kolay, audit’i hazır” diye anlatılır
+
+Hangi “an”da satılır?
+	•	Denetim yaklaşırken (“kanıt lazım”)
+	•	Tedarikçi sayısı büyüyünce (“Excel yetmiyor”)
+	•	Süreç yavaşlayınca (“karar gecikiyor”)
+
+1 cümle pitch (BD)
+
+“Teklif PDF’lerini otomatik kıyaslayıp kanıtlı öneri veren ve kararı audit trail’e dönüştüren procurement copilot.”
+
+⸻
+
+Son kullanıcıya çok basit anlatım
+
+“3 PDF yükle → sistem sana en iyi teklifi söylesin → ‘neden?’ diye sorulduğunda sayfa sayfa kanıtını göster.”

@@ -1,0 +1,22 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+
+# Large files
+*.pdf
+*.zip
+uploads/
+temp/
+
+# Private keys and certificates
+*.pem
+*.key
+*.crt
+*.cert
+fabric/connection-profiles/
+fabric/wallet/
+fabric/certs/
+
