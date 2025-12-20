@@ -246,6 +246,23 @@ export default function Footer() {
               >
                 Market Findings
               </Link>
+              <Link
+                href="/next-steps"
+                style={{
+                  fontSize: "0.875rem",
+                  color: "var(--text-tertiary)",
+                  transition: "all 0.2s ease",
+                  textDecoration: "none",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "white";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "var(--gray-400)";
+                }}
+              >
+                Next Steps
+              </Link>
             </nav>
           </div>
 
