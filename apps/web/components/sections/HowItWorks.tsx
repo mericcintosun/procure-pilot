@@ -105,7 +105,7 @@ export default function HowItWorks() {
                 cursor: "pointer",
                 transition: "all 0.3s ease",
                 position: "relative",
-                zIndex: 1000,
+                zIndex: 0,
               }}
             >
               <motion.div
@@ -115,7 +115,7 @@ export default function HowItWorks() {
                 transition={{ duration: 0.3 }}
               >
                 <Image
-                  src="/images/illustrations/illustration3.png"
+                  src="/images/illustrations/maskot2.png"
                   alt="How It Works"
                   width={600}
                   height={400}

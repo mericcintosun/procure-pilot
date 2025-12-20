@@ -12,6 +12,7 @@ import {
   FiFileText,
   FiCheckCircle,
 } from "react-icons/fi";
+import Image from "next/image";
 import Logo from "../../components/ui/Logo";
 
 export default function MarketFindingsPage() {
@@ -35,10 +36,10 @@ export default function MarketFindingsPage() {
         transition={{ duration: 0.6, delay: 0.1 }}
         style={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           gap: "var(--spacing-md)",
           marginBottom: "var(--spacing-2xl)",
-          flexWrap: "wrap",
         }}
       >
         <Logo showText={false} style={{ height: "100px", width: "auto" }} />
@@ -48,6 +49,7 @@ export default function MarketFindingsPage() {
             fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
             fontWeight: 800,
             color: "white",
+            textAlign: "center",
           }}
         >
           Market Findings
@@ -908,6 +910,31 @@ export default function MarketFindingsPage() {
           </motion.div>
         </motion.section>
       </div>
+      
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+        style={{
+          marginTop: "var(--spacing-3xl)",
+          display: "flex",
+          justifyContent: "center",
+          position: "relative",
+          zIndex: 0,
+        }}
+      >
+        <Image
+          src="/images/illustrations/maskot5.png"
+          alt="Market Findings"
+          width={400}
+          height={300}
+          style={{
+            objectFit: "contain",
+            maxWidth: "100%",
+            height: "auto",
+          }}
+        />
+      </motion.div>
     </motion.div>
   );
 }

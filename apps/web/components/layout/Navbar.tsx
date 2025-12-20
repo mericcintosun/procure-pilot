@@ -15,6 +15,7 @@ import {
   FiStar,
   FiTrendingUp,
   FiTarget,
+  FiDollarSign,
 } from "react-icons/fi";
 import Button from "../ui/Button";
 import Logo from "../ui/Logo";
@@ -253,6 +254,34 @@ export default function Navbar() {
           >
             <FiTarget style={{ fontSize: "0.8125rem", flexShrink: 0 }} />
             Next Steps
+          </Link>
+          <Link
+            href="/pricing"
+            style={{
+              padding: "0.5rem 0.75rem",
+              color: "var(--text-secondary)",
+              fontWeight: 500,
+              fontSize: "0.8125rem",
+              borderRadius: "var(--radius-md)",
+              transition: "all 0.2s ease",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.375rem",
+              textDecoration: "none",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--bg-hover)";
+              e.currentTarget.style.color = "var(--primary-light)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = "var(--text-secondary)";
+            }}
+          >
+            <FiDollarSign style={{ fontSize: "0.8125rem", flexShrink: 0 }} />
+            Pricing
           </Link>
         </div>
 

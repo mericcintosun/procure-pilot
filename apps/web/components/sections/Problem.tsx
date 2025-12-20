@@ -82,7 +82,7 @@ export default function Problem() {
                 cursor: "pointer",
                 transition: "all 0.3s ease",
                 position: "relative",
-                zIndex: 1000,
+                zIndex: 0,
               }}
             >
               <motion.div
@@ -92,7 +92,7 @@ export default function Problem() {
                 transition={{ duration: 0.3 }}
               >
                 <Image
-                  src="/images/illustrations/illustration2.png"
+                  src="/images/illustrations/maskot1.png"
                   alt="Procurement Problem"
                   width={600}
                   height={400}

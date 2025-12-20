@@ -114,7 +114,7 @@ export default function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
             style={{
-              background: "linear-gradient(120deg, #fbbf24 0%, #f59e0b 100%)",
+              background: "linear-gradient(120deg, #04d6ff 0%, #06b6d4 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",

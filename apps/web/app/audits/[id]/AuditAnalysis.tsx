@@ -324,7 +324,8 @@ export default function AuditAnalysis({
               display: "inline-block",
             }}
           >
-          <Logo showText={false} style={{ height: "100px", width: "auto" }} />          </motion.div>
+            <Logo showText={false} style={{ height: "100px", width: "auto" }} />{" "}
+          </motion.div>
           <p
             style={{
               fontSize: "1rem",

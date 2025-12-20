@@ -315,7 +315,7 @@ export default function RFQPage() {
             cursor: "pointer",
             transition: "all 0.3s ease",
             position: "relative",
-            zIndex: 1000,
+            zIndex: 0,
           }}
         >
           <motion.div
@@ -325,7 +325,7 @@ export default function RFQPage() {
             transition={{ duration: 0.3 }}
           >
             <Image
-              src="/images/illustrations/illustration4.png"
+              src="/images/illustrations/maskot3.png"
               alt="RFQ Workspace"
               width={600}
               height={400}

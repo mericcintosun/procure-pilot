@@ -263,6 +263,23 @@ export default function Footer() {
               >
                 Next Steps
               </Link>
+              <Link
+                href="/pricing"
+                style={{
+                  fontSize: "0.875rem",
+                  color: "var(--text-tertiary)",
+                  transition: "all 0.2s ease",
+                  textDecoration: "none",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "white";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "var(--gray-400)";
+                }}
+              >
+                Pricing
+              </Link>
             </nav>
           </div>
 
