@@ -5,50 +5,19 @@ import * as crypto from "crypto";
 
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-// Rate limiting: Free tier limit (20 requests per day per model)
-const RATE_LIMIT_DAILY = 20;
-const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
-
-interface RateLimitTracker {
-  count: number;
-  resetAt: number;
-}
-
-let rateLimitTracker: RateLimitTracker = {
-  count: 0,
-  resetAt: Date.now() + RATE_LIMIT_WINDOW_MS,
-};
-
-// Simple in-memory cache (text hash -> result)
-const extractionCache = new Map<string, AuditExtracted>();
-const analysisCache = new Map<string, { analysis: AuditAnalysis; metadata: AnalysisMetadata }>();
+// Rate limiting disabled - using gemini-2.5-flash-lite which has higher quotas
+// Rate limit checks removed to allow unlimited requests
 
 export function checkRateLimit(): { allowed: boolean; resetIn?: number } {
-  const now = Date.now();
-  
-  // Reset if window expired
-  if (now >= rateLimitTracker.resetAt) {
-    rateLimitTracker = {
-      count: 0,
-      resetAt: now + RATE_LIMIT_WINDOW_MS,
-    };
-  }
-  
-  if (rateLimitTracker.count >= RATE_LIMIT_DAILY) {
-    const resetIn = Math.ceil((rateLimitTracker.resetAt - now) / 1000 / 60); // minutes
-    return { allowed: false, resetIn };
-  }
-  
+  // Always allow - rate limiting disabled
   return { allowed: true };
 }
 
 export function incrementRateLimit(): void {
-  rateLimitTracker.count++;
+  // No-op - rate limiting disabled
 }
 
-function getCacheKey(text: string): string {
-  return crypto.createHash("sha256").update(text).digest("hex");
-}
+// Cache functions removed - caching disabled
 
 /**
  * Normalize date string to ISO format (YYYY-MM-DD)
@@ -187,23 +156,10 @@ export async function extractAuditFromText(
     throw new Error("Missing GEMINI_API_KEY");
   }
 
-  // Check cache first
-  const cacheKey = getCacheKey(text);
-  if (extractionCache.has(cacheKey)) {
-    console.log("✅ Using cached extraction result");
-    return extractionCache.get(cacheKey)!;
-  }
+  // Cache disabled - always perform new extraction
+  // This ensures fresh analysis every time
 
-  // Check rate limit
-  const rateLimit = checkRateLimit();
-  if (!rateLimit.allowed) {
-    console.warn(`⚠️  Rate limit exceeded. Using fallback extraction. Resets in ${rateLimit.resetIn} minutes.`);
-    const fallback = fallbackExtractAuditFromText(text);
-    extractionCache.set(cacheKey, fallback);
-    return fallback;
-  }
-
-  const modelName = process.env.GEMINI_MODEL || "gemini-2.0-flash-exp";
+  const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
   const model = ai.getGenerativeModel({ model: modelName });
 
   const prompt = `
@@ -288,18 +244,13 @@ Extract the audit information and return it as a structured JSON object followin
       validated.date = normalizeDate(validated.date) || validated.date;
     }
 
-    // Cache the result
-    extractionCache.set(cacheKey, validated);
-    incrementRateLimit();
-
+    // Cache disabled - return fresh result
     return validated;
   } catch (error: any) {
-    // Handle quota/rate limit errors
+    // Handle quota/rate limit errors - still use fallback if API fails
     if (error.message?.includes("429") || error.message?.includes("quota") || error.message?.includes("rate limit")) {
       console.warn("⚠️  Gemini API quota exceeded. Using fallback extraction.");
-      const fallback = fallbackExtractAuditFromText(text);
-      extractionCache.set(cacheKey, fallback);
-      return fallback;
+      return fallbackExtractAuditFromText(text);
     }
 
     console.error("Gemini extraction error:", error);
@@ -455,23 +406,10 @@ export async function analyzeAudit(
     throw new Error("Missing GEMINI_API_KEY");
   }
 
-  // Check cache first
-  const cacheKey = getCacheKey(JSON.stringify(auditData));
-  if (analysisCache.has(cacheKey)) {
-    console.log("✅ Using cached analysis result");
-    return analysisCache.get(cacheKey)!;
-  }
+  // Cache disabled - always perform new analysis
+  // This ensures fresh analysis every time
 
-  // Check rate limit
-  const rateLimit = checkRateLimit();
-  if (!rateLimit.allowed) {
-    console.warn(`⚠️  Rate limit exceeded. Using fallback analysis. Resets in ${rateLimit.resetIn} minutes.`);
-    const fallback = fallbackAnalyzeAudit(auditData, rulesScore || 0);
-    analysisCache.set(cacheKey, fallback);
-    return fallback;
-  }
-
-  const modelName = process.env.GEMINI_MODEL || "gemini-2.0-flash-exp";
+  const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
   const model = ai.getGenerativeModel({ model: modelName });
 
   const prompt = `
@@ -577,18 +515,13 @@ Return your analysis as a structured JSON object.
       llmScore: validated.riskScore,
     };
 
-    // Cache the result
-    analysisCache.set(cacheKey, { analysis: validated, metadata });
-    incrementRateLimit();
-
+    // Cache disabled - return fresh result
     return { analysis: validated, metadata };
   } catch (error: any) {
-    // Handle quota/rate limit errors
+    // Handle quota/rate limit errors - still use fallback if API fails
     if (error.message?.includes("429") || error.message?.includes("quota") || error.message?.includes("rate limit")) {
       console.warn("⚠️  Gemini API quota exceeded. Using fallback analysis.");
-      const fallback = fallbackAnalyzeAudit(auditData, rulesScore || 0);
-      analysisCache.set(cacheKey, fallback);
-      return fallback;
+      return fallbackAnalyzeAudit(auditData, rulesScore || 0);
     }
 
     console.error("Gemini analysis error:", error);

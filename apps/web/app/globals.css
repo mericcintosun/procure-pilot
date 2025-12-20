@@ -188,12 +188,12 @@ button {
   padding: 0 var(--spacing-lg);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .container {
     padding: 0 var(--spacing-md);
   }
 
-  /* Hide nav items on mobile, show hamburger */
+  /* Hide nav items on mobile/tablet, show hamburger */
   .nav-items {
     display: none !important;
   }
@@ -207,7 +207,7 @@ button {
   }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 1101px) {
   .nav-items {
     display: flex !important;
   }

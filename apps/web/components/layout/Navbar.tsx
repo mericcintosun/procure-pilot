@@ -33,7 +33,9 @@ export default function Navbar() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          gap: "var(--spacing-lg)",
+          gap: "var(--spacing-md)",
+          flexWrap: "nowrap",
+          overflow: "hidden",
         }}
       >
         <Link
@@ -44,6 +46,8 @@ export default function Navbar() {
             gap: "0.5rem",
             textDecoration: "none",
             color: "inherit",
+            flexShrink: 0,
+            whiteSpace: "nowrap",
           }}
         >
           <Logo size={32} showText={true} />
@@ -55,24 +59,29 @@ export default function Navbar() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "var(--spacing-md)",
-            flex: 1,
+            gap: "var(--spacing-xs)",
+            flex: "1 1 auto",
             justifyContent: "center",
+            minWidth: 0,
+            overflow: "hidden",
+            flexWrap: "nowrap",
           }}
         >
           <Link
             href="/"
             style={{
-              padding: "0.5rem 1rem",
+              padding: "0.5rem 0.75rem",
               color: "var(--text-secondary)",
               fontWeight: 500,
-              fontSize: "0.875rem",
+              fontSize: "0.8125rem",
               borderRadius: "var(--radius-md)",
               transition: "all 0.2s ease",
               display: "flex",
               alignItems: "center",
-              gap: "0.5rem",
+              gap: "0.375rem",
               textDecoration: "none",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "var(--bg-hover)";
@@ -83,22 +92,24 @@ export default function Navbar() {
               e.currentTarget.style.color = "var(--text-secondary)";
             }}
           >
-            <FiHome style={{ fontSize: "0.875rem" }} />
+            <FiHome style={{ fontSize: "0.8125rem", flexShrink: 0 }} />
             Home
           </Link>
           <Link
             href="/rfq"
             style={{
-              padding: "0.5rem 1rem",
+              padding: "0.5rem 0.75rem",
               color: "var(--text-secondary)",
               fontWeight: 500,
-              fontSize: "0.875rem",
+              fontSize: "0.8125rem",
               borderRadius: "var(--radius-md)",
               transition: "all 0.2s ease",
               display: "flex",
               alignItems: "center",
-              gap: "0.5rem",
+              gap: "0.375rem",
               textDecoration: "none",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "var(--bg-hover)";
@@ -109,22 +120,24 @@ export default function Navbar() {
               e.currentTarget.style.color = "var(--text-secondary)";
             }}
           >
-            <FiBarChart2 style={{ fontSize: "0.875rem" }} />
+            <FiBarChart2 style={{ fontSize: "0.8125rem", flexShrink: 0 }} />
             RFQ Workspace
           </Link>
           <Link
             href="/audits"
             style={{
-              padding: "0.5rem 1rem",
+              padding: "0.5rem 0.75rem",
               color: "var(--text-secondary)",
               fontWeight: 500,
-              fontSize: "0.875rem",
+              fontSize: "0.8125rem",
               borderRadius: "var(--radius-md)",
               transition: "all 0.2s ease",
               display: "flex",
               alignItems: "center",
-              gap: "0.5rem",
+              gap: "0.375rem",
               textDecoration: "none",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "var(--bg-hover)";
@@ -135,7 +148,7 @@ export default function Navbar() {
               e.currentTarget.style.color = "var(--text-secondary)";
             }}
           >
-            <FiFile style={{ fontSize: "0.875rem" }} />
+            <FiFile style={{ fontSize: "0.8125rem", flexShrink: 0 }} />
             Audits
           </Link>
           <Link
@@ -143,16 +156,18 @@ export default function Navbar() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              padding: "0.5rem 1rem",
+              padding: "0.5rem 0.75rem",
               color: "var(--text-secondary)",
               fontWeight: 500,
-              fontSize: "0.875rem",
+              fontSize: "0.8125rem",
               borderRadius: "var(--radius-md)",
               transition: "all 0.2s ease",
               display: "flex",
               alignItems: "center",
-              gap: "0.5rem",
+              gap: "0.375rem",
               textDecoration: "none",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "var(--bg-hover)";
@@ -163,22 +178,24 @@ export default function Navbar() {
               e.currentTarget.style.color = "var(--text-secondary)";
             }}
           >
-            <FiStar style={{ fontSize: "0.875rem" }} />
+            <FiStar style={{ fontSize: "0.8125rem", flexShrink: 0 }} />
             Features
           </Link>
           <Link
             href="/market-findings"
             style={{
-              padding: "0.5rem 1rem",
+              padding: "0.5rem 0.75rem",
               color: "var(--text-secondary)",
               fontWeight: 500,
-              fontSize: "0.875rem",
+              fontSize: "0.8125rem",
               borderRadius: "var(--radius-md)",
               transition: "all 0.2s ease",
               display: "flex",
               alignItems: "center",
-              gap: "0.5rem",
+              gap: "0.375rem",
               textDecoration: "none",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "var(--bg-hover)";
@@ -189,22 +206,24 @@ export default function Navbar() {
               e.currentTarget.style.color = "var(--text-secondary)";
             }}
           >
-            <FiTrendingUp style={{ fontSize: "0.875rem" }} />
+            <FiTrendingUp style={{ fontSize: "0.8125rem", flexShrink: 0 }} />
             Market Findings
           </Link>
           <Link
             href="/next-steps"
             style={{
-              padding: "0.5rem 1rem",
+              padding: "0.5rem 0.75rem",
               color: "var(--text-secondary)",
               fontWeight: 500,
-              fontSize: "0.875rem",
+              fontSize: "0.8125rem",
               borderRadius: "var(--radius-md)",
               transition: "all 0.2s ease",
               display: "flex",
               alignItems: "center",
-              gap: "0.5rem",
+              gap: "0.375rem",
               textDecoration: "none",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "var(--bg-hover)";
@@ -215,7 +234,7 @@ export default function Navbar() {
               e.currentTarget.style.color = "var(--text-secondary)";
             }}
           >
-            <FiTarget style={{ fontSize: "0.875rem" }} />
+            <FiTarget style={{ fontSize: "0.8125rem", flexShrink: 0 }} />
             Next Steps
           </Link>
         </div>
@@ -227,6 +246,8 @@ export default function Navbar() {
             display: "flex",
             alignItems: "center",
             gap: "var(--spacing-sm)",
+            flexShrink: 0,
+            whiteSpace: "nowrap",
           }}
         >
           <Button

@@ -216,16 +216,10 @@ export async function extractOfferFromPDFPages(
     throw new Error("Missing GEMINI_API_KEY");
   }
 
-  // Check rate limit
-  const rateLimit = checkRateLimit();
-  if (!rateLimit.allowed) {
-    console.warn(`⚠️  Rate limit exceeded. Using fallback extraction for ${filename}. Resets in ${rateLimit.resetIn} minutes.`);
-    // Fallback: combine all pages into single text
-    const combinedText = pages.map((p) => `PAGE ${p.page}: ${p.text}`).join("\n\n");
-    return fallbackExtractOfferFromPDF(combinedText, filename);
-  }
+  // Rate limit disabled - always perform new extraction
+  // This ensures fresh extraction every time
 
-  const modelName = process.env.GEMINI_MODEL || "gemini-2.0-flash-exp";
+  const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
   const model = ai.getGenerativeModel({ model: modelName });
 
   // Build page-by-page context
@@ -492,7 +486,7 @@ Every field must have evidence with page number and quote.
       return fallbackExtractOfferFromPDF(combinedText, filename);
     }
 
-    incrementRateLimit();
+    // Rate limit disabled - return fresh result
     return validated;
   } catch (error: any) {
     console.error("Gemini RFQ extraction error:", error);
