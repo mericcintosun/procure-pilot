@@ -10,9 +10,9 @@ import { extractPdfPages } from "../pdf/extractPages";
 import { getFabric } from "../fabric/gateway";
 import type { OfferExtracted } from "../ai/rfq-schema";
 import {
-  calculateRiskScore,
+  calculateFeasibilityScore,
   calculateBenchmarkPrice,
-  type RiskScoreResult,
+  type FeasibilityScoreResult,
 } from "../ai/risk-scoring";
 
 export const rfqRouter: IRouter = Router();
@@ -22,24 +22,30 @@ export const rfqRouter: IRouter = Router();
  */
 function generateMeaningfulRFQId(offer: any): string {
   const parts: string[] = [];
-  
+
   try {
     // Add vendor (first 2 words, max 15 chars)
-    const vendor = typeof offer?.vendor === "object" && offer.vendor?.value 
-      ? offer.vendor.value 
-      : (offer?.vendor || "");
-    
-    if (vendor && typeof vendor === 'string') {
+    const vendor =
+      typeof offer?.vendor === "object" && offer.vendor?.value
+        ? offer.vendor.value
+        : offer?.vendor || "";
+
+    if (vendor && typeof vendor === "string") {
       const vendorWords = vendor.split(/\s+/).slice(0, 2);
-      const vendorPart = vendorWords.join('-').replace(/[^a-z0-9-]/gi, '').toLowerCase().substring(0, 15);
+      const vendorPart = vendorWords
+        .join("-")
+        .replace(/[^a-z0-9-]/gi, "")
+        .toLowerCase()
+        .substring(0, 15);
       if (vendorPart) parts.push(vendorPart);
     }
-    
+
     // Add amount if available (rounded to thousands)
-    const totalPrice = typeof offer?.totalPrice === "object" && offer.totalPrice?.value
-      ? offer.totalPrice.value
-      : (offer?.totalPrice || 0);
-    
+    const totalPrice =
+      typeof offer?.totalPrice === "object" && offer.totalPrice?.value
+        ? offer.totalPrice.value
+        : offer?.totalPrice || 0;
+
     if (totalPrice && typeof totalPrice === "number" && !isNaN(totalPrice)) {
       const amountK = Math.round(totalPrice / 1000);
       if (amountK > 0) parts.push(`${amountK}k`);
@@ -47,15 +53,15 @@ function generateMeaningfulRFQId(offer: any): string {
   } catch (e) {
     console.warn("Error generating meaningful RFQ ID, using fallback:", e);
   }
-  
+
   // Add timestamp suffix to ensure uniqueness
   const timestamp = Date.now();
-  
+
   // Combine parts
   if (parts.length > 0) {
-    return `rfq-${parts.join('-')}-${timestamp}`;
+    return `rfq-${parts.join("-")}-${timestamp}`;
   }
-  
+
   // Fallback to simple timestamp
   return `rfq-${timestamp}`;
 }
@@ -66,8 +72,14 @@ function generateMeaningfulRFQId(offer: any): string {
  */
 function normalizeExtractedOffer(extracted: OfferExtracted): any {
   const normalized: any = {
-    vendor: typeof extracted.vendor === "object" ? extracted.vendor.value : extracted.vendor,
-    redFlags: extracted.redFlags?.map((rf) => (typeof rf === "object" ? rf.flag : rf)) || [],
+    vendor:
+      typeof extracted.vendor === "object"
+        ? extracted.vendor.value
+        : extracted.vendor,
+    redFlags:
+      extracted.redFlags?.map((rf) =>
+        typeof rf === "object" ? rf.flag : rf
+      ) || [],
     evidence: [],
   };
 
@@ -240,8 +252,8 @@ const upload = multer({
  */
 rfqRouter.post("/upload", upload.array("files", 3), async (req, res) => {
   try {
-    const files = req.files as Express.Multer.File[] || [];
-    
+    const files = (req.files as Express.Multer.File[]) || [];
+
     if (!files.length) {
       return res.status(400).json({ error: "No files uploaded" });
     }
@@ -252,7 +264,7 @@ rfqRouter.post("/upload", upload.array("files", 3), async (req, res) => {
         // Extract pages separately for evidence tracking
         const pages = await extractPdfPages(file.buffer);
         const combinedText = pages.map((p) => p.text).join("\n\n");
-        
+
         documents.push({
           filename: file.originalname,
           pages: pages.map((p) => ({ page: p.page, text: p.text })),
@@ -312,12 +324,12 @@ rfqRouter.post("/analyze", async (req, res) => {
     // Extract offers from each document using page-by-page extraction
     const offers = [];
     const extractedOffersMap = new Map<string, OfferExtracted>(); // Store original extracted format
-    
+
     for (const doc of documents) {
       try {
         // Use page-by-page data if available, otherwise fall back to combined text
         let pages: Array<{ page: number; text: string }> = [];
-        
+
         if (doc.pages && Array.isArray(doc.pages)) {
           // New format: page-by-page data
           pages = doc.pages;
@@ -333,22 +345,29 @@ rfqRouter.post("/analyze", async (req, res) => {
           continue;
         }
 
-        console.log(`Extracting offer from ${doc.filename} (${pages.length} pages)...`);
+        console.log(
+          `Extracting offer from ${doc.filename} (${pages.length} pages)...`
+        );
         const extracted = await extractOfferFromPDFPages(pages, doc.filename);
-        
+
         // Store original extracted format for risk scoring
         extractedOffersMap.set(doc.filename, extracted);
-        
+
         // Normalize extracted data for backward compatibility
         const normalized = normalizeExtractedOffer(extracted);
-        
+
         // Validate that we have at least a vendor
         const vendorName = normalized.vendor || "Unknown Vendor";
         if (vendorName === "Unknown Vendor") {
-          console.warn(`⚠️  No vendor extracted from ${doc.filename}, using filename as fallback`);
-          normalized.vendor = doc.filename.replace(/\.(pdf|txt|md)$/i, "").replace(/[_-]/g, " ") || "Unknown Vendor";
+          console.warn(
+            `⚠️  No vendor extracted from ${doc.filename}, using filename as fallback`
+          );
+          normalized.vendor =
+            doc.filename
+              .replace(/\.(pdf|txt|md)$/i, "")
+              .replace(/[_-]/g, " ") || "Unknown Vendor";
         }
-        
+
         offers.push({
           filename: doc.filename,
           ...normalized,
@@ -377,7 +396,9 @@ rfqRouter.post("/analyze", async (req, res) => {
     // Filter out offers with errors, but log them for debugging
     const validOffers = offers.filter((o) => {
       if (o.error) {
-        console.warn(`⚠️  Skipping offer with error: ${o.filename} - ${o.error}`);
+        console.warn(
+          `⚠️  Skipping offer with error: ${o.filename} - ${o.error}`
+        );
         return false;
       }
       if (!o.vendor || o.vendor === "Unknown Vendor") {
@@ -388,32 +409,48 @@ rfqRouter.post("/analyze", async (req, res) => {
     });
 
     if (validOffers.length === 0) {
-      console.error("❌ No valid offers extracted. All offers had errors or missing vendor.");
-      console.error("Offers received:", offers.map((o) => ({
-        filename: o.filename,
-        vendor: o.vendor,
-        error: o.error,
-      })));
+      console.error(
+        "❌ No valid offers extracted. All offers had errors or missing vendor."
+      );
+      console.error(
+        "Offers received:",
+        offers.map((o) => ({
+          filename: o.filename,
+          vendor: o.vendor,
+          error: o.error,
+        }))
+      );
     }
 
     // Get original extracted offers for risk scoring
     const extractedOffers: OfferExtracted[] = validOffers
       .map((offer) => extractedOffersMap.get(offer.filename))
-      .filter((extracted): extracted is OfferExtracted => extracted !== undefined);
+      .filter(
+        (extracted): extracted is OfferExtracted => extracted !== undefined
+      );
 
     // Calculate benchmark price for outlier detection
     const benchmarkPrice = calculateBenchmarkPrice(extractedOffers);
 
-    // Calculate risk scores for all offers
-    const riskScoreResultsMap = new Map<string, RiskScoreResult>();
+    // Calculate feasibility scores for all offers
+    const feasibilityScoreResultsMap = new Map<
+      string,
+      FeasibilityScoreResult
+    >();
     for (const extracted of extractedOffers) {
       // Find corresponding normalized offer to get filename
       const normalizedOffer = validOffers.find(
         (o) => extractedOffersMap.get(o.filename) === extracted
       );
       if (normalizedOffer) {
-        const riskScoreResult = calculateRiskScore(extracted, benchmarkPrice);
-        riskScoreResultsMap.set(normalizedOffer.filename, riskScoreResult);
+        const feasibilityScoreResult = calculateFeasibilityScore(
+          extracted,
+          benchmarkPrice
+        );
+        feasibilityScoreResultsMap.set(
+          normalizedOffer.filename,
+          feasibilityScoreResult
+        );
       }
     }
 
@@ -422,38 +459,47 @@ rfqRouter.post("/analyze", async (req, res) => {
       .map((offer) => {
         // Price score (lower price = higher score)
         const priceScore = offer.totalPrice
-          ? Math.max(0, Math.min(100, 100 - ((offer.totalPrice - 14000) / (18000 - 14000)) * 100))
+          ? Math.max(
+              0,
+              Math.min(
+                100,
+                100 - ((offer.totalPrice - 14000) / (18000 - 14000)) * 100
+              )
+            )
           : 50;
 
         // Speed score (faster = higher score)
         const speedScore = offer.leadTimeDays
-          ? Math.max(0, Math.min(100, 100 - ((offer.leadTimeDays - 10) / (25 - 10)) * 100))
+          ? Math.max(
+              0,
+              Math.min(100, 100 - ((offer.leadTimeDays - 10) / (25 - 10)) * 100)
+            )
           : 50;
 
-        // Risk score from new system (higher risk = lower score for weighted calculation)
-        // But we keep the raw risk score (0-100, higher = more risk) in the response
-        const riskScoreResult = riskScoreResultsMap.get(offer.filename);
-        const riskScore = riskScoreResult?.riskScore ?? 50; // 0-100, higher = more risk
-        const riskScoreForWeighting = 100 - riskScore; // Invert for weighted score (lower risk = higher score)
+        // Feasibility score from new system (higher = more feasible/less risky)
+        const feasibilityScoreResult = feasibilityScoreResultsMap.get(
+          offer.filename
+        );
+        const feasibilityScore = feasibilityScoreResult?.feasibilityScore ?? 50; // 0-100, higher = more feasible
 
         const weightedScore =
           priceScore * finalWeights.price +
-          riskScoreForWeighting * finalWeights.risk +
+          feasibilityScore * finalWeights.risk +
           speedScore * finalWeights.speed;
 
         return {
           ...offer,
           scores: {
             price: Math.max(0, Math.min(100, priceScore)),
-            risk: Math.max(0, Math.min(100, riskScore)), // Raw risk score (higher = more risk)
+            risk: Math.max(0, Math.min(100, feasibilityScore)), // Feasibility score (higher = more feasible)
             speed: Math.max(0, Math.min(100, speedScore)),
             weighted: Math.max(0, Math.min(100, weightedScore)),
           },
-          riskScoreDetails: riskScoreResult
+          riskScoreDetails: feasibilityScoreResult
             ? {
-                riskScore: riskScoreResult.riskScore,
-                components: riskScoreResult.components,
-                evidence: riskScoreResult.evidence,
+                riskScore: feasibilityScoreResult.feasibilityScore, // Keep field name for backward compatibility
+                components: feasibilityScoreResult.components,
+                evidence: feasibilityScoreResult.evidence,
               }
             : undefined,
         };
@@ -505,7 +551,9 @@ rfqRouter.post("/store", async (req, res) => {
         extractionMethod: "page-by-page",
         evidenceCount: offer.evidence?.length || 0,
         fieldsWithEvidence: offer.evidence
-          ? Array.from(new Set(offer.evidence.map((e: { field: string }) => e.field)))
+          ? Array.from(
+              new Set(offer.evidence.map((e: { field: string }) => e.field))
+            )
           : [],
         timestamp: new Date().toISOString(),
       },
@@ -521,7 +569,9 @@ rfqRouter.post("/store", async (req, res) => {
 
     const onChain = JSON.parse(Buffer.from(resultBytes).toString("utf8"));
 
-    console.log(`✅ Stored RFQ offer to Fabric: ${finalId} with ${auditPayload.metadata.evidenceCount} evidence items`);
+    console.log(
+      `✅ Stored RFQ offer to Fabric: ${finalId} with ${auditPayload.metadata.evidenceCount} evidence items`
+    );
 
     res.status(201).json({
       id: finalId,
@@ -537,4 +587,3 @@ rfqRouter.post("/store", async (req, res) => {
     });
   }
 });
-

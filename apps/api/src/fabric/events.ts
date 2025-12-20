@@ -63,9 +63,12 @@ export async function startAutoAnalysis() {
             rulesResult.score
           );
 
-          const combinedRiskScore = Math.max(
-            rulesResult.score,
-            analysis.riskScore
+          // Combine rule-based and LLM feasibility scores
+          // Convert rules score (risk) to feasibility: feasibility = 100 - risk
+          const rulesFeasibilityScore = 100 - rulesResult.score;
+          const combinedFeasibilityScore = Math.min(
+            rulesFeasibilityScore,
+            analysis.riskScore // Already feasibility score from Gemini
           );
 
           // Store analysis in Fabric using StoreAnalysis (idempotent)
@@ -73,7 +76,7 @@ export async function startAutoAnalysis() {
             auditId: audit.ID,
             analysis: {
               ...analysis,
-              riskScore: combinedRiskScore,
+              riskScore: combinedFeasibilityScore, // Store as feasibility score (field name kept for backward compatibility)
               rulesResult,
             },
             metadata,
@@ -121,7 +124,7 @@ export async function startAutoAnalysis() {
           }
 
           console.log(
-            `✅ Auto-analysis completed for ${audit.ID} (Risk: ${combinedRiskScore})`
+            `✅ Auto-analysis completed for ${audit.ID} (Feasibility: ${combinedFeasibilityScore})`
           );
         } catch (error: any) {
           console.error(`Error auto-analyzing ${audit.ID}:`, error.message);

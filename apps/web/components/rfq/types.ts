@@ -11,7 +11,7 @@ export interface Evidence {
   section?: string;
 }
 
-export interface RiskScoreComponents {
+export interface FeasibilityScoreComponents {
   leadTime: number;
   paymentTerms: number;
   penaltyClause: number;
@@ -21,18 +21,18 @@ export interface RiskScoreComponents {
   missingFields: number;
 }
 
-export interface RiskScoreEvidence {
+export interface FeasibilityScoreEvidence {
   field: string;
   page: number;
   quote: string;
-  component: keyof RiskScoreComponents;
+  component: keyof FeasibilityScoreComponents;
   contribution: number;
 }
 
-export interface RiskScoreDetails {
-  riskScore: number; // 0-100, higher = more risk
-  components: RiskScoreComponents;
-  evidence: RiskScoreEvidence[];
+export interface FeasibilityScoreDetails {
+  feasibilityScore: number; // 0-100, higher = more feasible/less risky
+  components: FeasibilityScoreComponents;
+  evidence: FeasibilityScoreEvidence[];
 }
 
 export interface Offer {
@@ -56,11 +56,11 @@ export interface Offer {
   evidence?: Evidence[];
   scores?: {
     price: number;
-    risk: number; // 0-100, higher = more risk
+    risk: number; // 0-100, higher = more feasible (kept as "risk" for backward compatibility in UI)
     speed: number;
     weighted: number;
   };
-  riskScoreDetails?: RiskScoreDetails;
+  riskScoreDetails?: FeasibilityScoreDetails; // Kept name for backward compatibility
   error?: string;
 }
 
@@ -75,7 +75,11 @@ export interface EvidenceState {
   field: string;
 }
 
-export type WeightPreset = "cost-first" | "risk-first" | "speed-first" | "custom";
+export type WeightPreset =
+  | "cost-first"
+  | "risk-first"
+  | "speed-first"
+  | "custom";
 
 export const WEIGHT_PRESETS: Record<WeightPreset, Weights> = {
   "cost-first": { price: 0.6, risk: 0.2, speed: 0.2 },
@@ -83,4 +87,3 @@ export const WEIGHT_PRESETS: Record<WeightPreset, Weights> = {
   "speed-first": { price: 0.2, risk: 0.2, speed: 0.6 },
   custom: { price: 0.4, risk: 0.4, speed: 0.2 },
 };
-

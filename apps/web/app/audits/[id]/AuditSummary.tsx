@@ -103,14 +103,14 @@ export default function AuditSummary({
   };
 
   const getRiskCount = () => {
-    // Use AI analysis risk score if available, otherwise use flags
+    // Use AI analysis feasibility score if available, otherwise use flags
     if (analysis?.riskScore !== undefined && analysis?.riskScore !== null) {
-      // Convert risk score (0-100) to a count-like representation
-      if (analysis.riskScore === 0) return 0;
-      if (analysis.riskScore <= 30) return 0; // Low risk = no flags
-      if (analysis.riskScore <= 60) return 1; // Medium risk = 1 flag
-      if (analysis.riskScore <= 80) return 2; // High risk = 2 flags
-      return 3; // Critical risk = 3+ flags
+      // Convert feasibility score (0-100, higher = more feasible) to risk count
+      // Lower feasibility = more risk flags
+      if (analysis.riskScore >= 80) return 0; // Highly feasible = no flags
+      if (analysis.riskScore >= 60) return 1; // Feasible = 1 flag
+      if (analysis.riskScore >= 30) return 2; // Moderately feasible = 2 flags
+      return 3; // Not feasible = 3+ flags
     }
     // Fallback to flags if no analysis
     const flags = auditData?.riskFlags || auditData?.redFlags || [];
@@ -118,11 +118,11 @@ export default function AuditSummary({
   };
 
   const getRecommendation = () => {
-    // Use AI analysis risk score if available
+    // Use AI analysis feasibility score if available (higher = more feasible)
     if (analysis?.riskScore !== undefined && analysis?.riskScore !== null) {
-      if (analysis.riskScore <= 30) return "Approve";
-      if (analysis.riskScore <= 60) return "Review";
-      if (analysis.riskScore <= 80) return "Requires Attention";
+      if (analysis.riskScore >= 80) return "Approve";
+      if (analysis.riskScore >= 60) return "Review";
+      if (analysis.riskScore >= 30) return "Requires Attention";
       return "Critical Review";
     }
     // Fallback to risk count

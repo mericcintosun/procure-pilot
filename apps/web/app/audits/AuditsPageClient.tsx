@@ -90,8 +90,8 @@ export default function AuditsPageClient({
     return filtered;
   }, [initialAudits, searchQuery, filterType, sortBy]);
 
-  const getRiskScore = (audit: any): number | null => {
-    return audit.analysis?.riskScore ?? null;
+  const getFeasibilityScore = (audit: any): number | null => {
+    return audit.analysis?.riskScore ?? null; // Field name kept for backward compatibility, but value is feasibility score
   };
 
   const getRiskCount = (audit: any): number => {
@@ -561,7 +561,7 @@ export default function AuditsPageClient({
           }}
         >
           {filteredAudits.map((audit: any) => {
-            const riskScore = getRiskScore(audit);
+            const feasibilityScore = getFeasibilityScore(audit);
             const riskCount = getRiskCount(audit);
             const vendorName = getVendorName(audit);
             const typeLabel = getTypeLabel(audit);
@@ -665,7 +665,7 @@ export default function AuditsPageClient({
                       </div>
                     </div>
 
-                    {/* Right: Risk Badge + Score */}
+                    {/* Right: Risk Badge + Feasibility Score */}
                     <div
                       style={{
                         display: "flex",
@@ -692,23 +692,23 @@ export default function AuditsPageClient({
                           {riskCount} Risk{riskCount > 1 ? "s" : ""}
                         </span>
                       )}
-                      {riskScore !== null && (
+                      {feasibilityScore !== null && (
                         <span
                           style={{
                             padding: "0.25rem 0.75rem",
                             background:
-                              riskScore >= 70
-                                ? "var(--error)"
-                                : riskScore >= 40
+                              feasibilityScore >= 80
+                                ? "var(--success)"
+                                : feasibilityScore >= 60
                                 ? "var(--warning)"
-                                : "var(--success)",
+                                : "var(--error)",
                             color: "white",
                             borderRadius: "var(--radius-sm)",
                             fontSize: "0.75rem",
                             fontWeight: 600,
                           }}
                         >
-                          Score: {riskScore}
+                          Feasibility: {feasibilityScore}
                         </span>
                       )}
                     </div>

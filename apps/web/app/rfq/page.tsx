@@ -143,9 +143,9 @@ export default function RFQPage() {
         )
       : 50;
 
-    // Use new risk scoring system if available, otherwise fallback to old calculation
-    const riskScore = offer.riskScoreDetails
-      ? offer.riskScoreDetails.riskScore // 0-100, higher = more risk
+    // Use new feasibility scoring system if available, otherwise fallback to old calculation
+    const feasibilityScore = offer.riskScoreDetails
+      ? offer.riskScoreDetails.feasibilityScore // 0-100, higher = more feasible
       : Math.max(0, Math.min(100, 100 - (offer.redFlags?.length || 0) * 20));
 
     const speedScore = offer.leadTimeDays
@@ -155,16 +155,15 @@ export default function RFQPage() {
         )
       : 50;
 
-    // For weighted score, invert risk (lower risk = higher score)
-    const riskScoreForWeighting = 100 - riskScore;
+    // Feasibility score is already in the correct direction (higher = better)
     const weightedScore =
       priceScore * weights.price +
-      riskScoreForWeighting * weights.risk +
+      feasibilityScore * weights.risk +
       speedScore * weights.speed;
 
     return {
       price: Math.max(0, Math.min(100, priceScore)),
-      risk: Math.max(0, Math.min(100, riskScore)), // Raw risk score (higher = more risk)
+      risk: Math.max(0, Math.min(100, feasibilityScore)), // Feasibility score (higher = more feasible)
       speed: Math.max(0, Math.min(100, speedScore)),
       weighted: Math.max(0, Math.min(100, weightedScore)),
     };

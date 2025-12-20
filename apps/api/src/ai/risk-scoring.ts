@@ -1,11 +1,12 @@
 /**
- * Risk Scoring System for RFQ Offers
- * Weighted, explainable risk calculation with evidence-based components
+ * Feasibility Scoring System for RFQ Offers
+ * Weighted, explainable feasibility calculation with evidence-based components
+ * Feasibility score (0-100): Higher = more feasible/less risky
  */
 
 import type { OfferExtracted } from "./rfq-schema";
 
-export interface RiskScoreComponents {
+export interface FeasibilityScoreComponents {
   leadTime: number;
   paymentTerms: number;
   penaltyClause: number;
@@ -15,14 +16,14 @@ export interface RiskScoreComponents {
   missingFields: number;
 }
 
-export interface RiskScoreResult {
-  riskScore: number; // 0-100, higher = more risk
-  components: RiskScoreComponents;
+export interface FeasibilityScoreResult {
+  feasibilityScore: number; // 0-100, higher = more feasible/less risky
+  components: FeasibilityScoreComponents;
   evidence: Array<{
     field: string;
     page: number;
     quote: string;
-    component: keyof RiskScoreComponents;
+    component: keyof FeasibilityScoreComponents;
     contribution: number;
   }>;
 }
@@ -184,21 +185,19 @@ function normalizeOfferData(
 }
 
 /**
- * Collect evidence for risk components from offer
+ * Collect evidence for feasibility components from offer
  */
 function collectEvidence(
   offer: OfferExtracted,
-  components: RiskScoreComponents,
+  components: FeasibilityScoreComponents,
   weights: typeof DEFAULT_WEIGHTS
-): RiskScoreResult["evidence"] {
-  const evidence: RiskScoreResult["evidence"] = [];
+): FeasibilityScoreResult["evidence"] {
+  const evidence: FeasibilityScoreResult["evidence"] = [];
 
   // Lead time evidence
   if (offer.leadTimeDays) {
     const leadTimeEvidence =
-      typeof offer.leadTimeDays === "object"
-        ? offer.leadTimeDays.evidence
-        : [];
+      typeof offer.leadTimeDays === "object" ? offer.leadTimeDays.evidence : [];
     leadTimeEvidence.forEach((ev) => {
       evidence.push({
         field: "leadTimeDays",
@@ -334,12 +333,27 @@ function calculateAdaptiveWeights(
 }
 
 /**
- * Calculate comprehensive risk score for an offer
+ * Calculate comprehensive feasibility score for an offer
+ *
+ * HOW IT WORKS:
+ * 1. Analyzes 7 key factors: lead time, payment terms, penalty clauses, GDPR compliance,
+ *    red flags, price outliers, and missing fields
+ * 2. Each factor is normalized (0-100) and weighted based on context
+ * 3. Risk score is calculated as weighted sum of risk components
+ * 4. Feasibility score = 100 - risk score (inverse relationship)
+ *
+ * SCORING:
+ * - 81-100: Highly feasible (low risk, recommended)
+ * - 61-80: Feasible (minor concerns, acceptable)
+ * - 31-60: Moderately feasible (some risks, needs review)
+ * - 0-30: Not feasible (high risk, not recommended)
+ *
+ * Higher score = more feasible/less risky offer
  */
-export function calculateRiskScore(
+export function calculateFeasibilityScore(
   offer: OfferExtracted,
   benchmarkPrice?: number
-): RiskScoreResult {
+): FeasibilityScoreResult {
   // Normalize offer data
   const normalized = normalizeOfferData(offer, benchmarkPrice);
 
@@ -354,9 +368,7 @@ export function calculateRiskScore(
   const normPaymentRisk = 1 - normPaymentFavorable; // Invert for risk
   const penaltyClauseRisk = normalized.penaltyClauseExists ? 0 : 1;
   const gdprComplianceRisk = normalized.gdprComplianceExists ? 0 : 1;
-  const normalizedRedFlagCount = normalizeRedFlagCount(
-    normalized.redFlagCount
-  );
+  const normalizedRedFlagCount = normalizeRedFlagCount(normalized.redFlagCount);
   const priceOutlierScore = calculatePriceOutlierScore(
     normalized.totalPrice,
     normalized.benchmarkPrice
@@ -366,8 +378,8 @@ export function calculateRiskScore(
     normalized.totalExpectedFields
   );
 
-  // Calculate component contributions (0-100 scale)
-  const components: RiskScoreComponents = {
+  // Calculate component contributions (0-100 scale) - these represent risk factors
+  const riskComponents: FeasibilityScoreComponents = {
     leadTime: normLeadTime * 100,
     paymentTerms: normPaymentRisk * 100,
     penaltyClause: penaltyClauseRisk * 100,
@@ -377,21 +389,36 @@ export function calculateRiskScore(
     missingFields: missingFieldsScore * 100,
   };
 
-  // Calculate weighted risk score
+  // Calculate weighted risk score (0-100, higher = more risk)
   const riskScore =
-    components.leadTime * weights.leadTime +
-    components.paymentTerms * weights.paymentTerms +
-    components.penaltyClause * weights.penaltyClause +
-    components.gdprCompliance * weights.gdprCompliance +
-    components.redFlags * weights.redFlags +
-    components.priceOutlier * weights.priceOutlier +
-    components.missingFields * weights.missingFields;
+    riskComponents.leadTime * weights.leadTime +
+    riskComponents.paymentTerms * weights.paymentTerms +
+    riskComponents.penaltyClause * weights.penaltyClause +
+    riskComponents.gdprCompliance * weights.gdprCompliance +
+    riskComponents.redFlags * weights.redFlags +
+    riskComponents.priceOutlier * weights.priceOutlier +
+    riskComponents.missingFields * weights.missingFields;
 
-  // Collect evidence
-  const evidence = collectEvidence(offer, components, weights);
+  // Convert risk score to feasibility score (inverse: 100 - risk)
+  // Higher feasibility = less risk = more feasible
+  const feasibilityScore = 100 - Math.max(0, Math.min(100, riskScore));
+
+  // Convert risk components to feasibility components (inverse)
+  const components: FeasibilityScoreComponents = {
+    leadTime: 100 - riskComponents.leadTime,
+    paymentTerms: 100 - riskComponents.paymentTerms,
+    penaltyClause: 100 - riskComponents.penaltyClause,
+    gdprCompliance: 100 - riskComponents.gdprCompliance,
+    redFlags: 100 - riskComponents.redFlags,
+    priceOutlier: 100 - riskComponents.priceOutlier,
+    missingFields: 100 - riskComponents.missingFields,
+  };
+
+  // Collect evidence (using risk components for contribution calculation)
+  const evidence = collectEvidence(offer, riskComponents, weights);
 
   return {
-    riskScore: Math.max(0, Math.min(100, riskScore)),
+    feasibilityScore: Math.max(0, Math.min(100, feasibilityScore)),
     components,
     evidence,
   };
@@ -417,4 +444,3 @@ export function calculateBenchmarkPrice(offers: OfferExtracted[]): number {
   const sum = prices.reduce((acc, p) => acc + p, 0);
   return sum / prices.length;
 }
-

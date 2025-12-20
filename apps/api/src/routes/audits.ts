@@ -50,14 +50,17 @@ auditsRouter.get("/:id/analysis", async (req, res) => {
   try {
     const { id } = req.params;
     const analysisKey = `analysis::${id}`;
-    
+
     const { contract } = await getFabric();
-    
+
     try {
-      const resultBytes = await contract.evaluateTransaction("ReadAuditRecord", analysisKey);
+      const resultBytes = await contract.evaluateTransaction(
+        "ReadAuditRecord",
+        analysisKey
+      );
       const json = Buffer.from(resultBytes).toString("utf8");
       const analysisRecord = JSON.parse(json);
-      
+
       // Return the analysis data in a consistent format
       res.status(200).json({
         auditId: id,
@@ -68,7 +71,7 @@ auditsRouter.get("/:id/analysis", async (req, res) => {
       });
     } catch (error: any) {
       const errorMessage = extractChaincodeError(error);
-      
+
       // If analysis doesn't exist, return 404
       if (errorMessage.includes("does not exist")) {
         return res.status(404).json({
@@ -77,7 +80,7 @@ auditsRouter.get("/:id/analysis", async (req, res) => {
           exists: false,
         });
       }
-      
+
       throw error;
     }
   } catch (error: any) {
@@ -94,26 +97,31 @@ auditsRouter.get("/:id/analysis", async (req, res) => {
 auditsRouter.post("/:id/analyze", async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Read audit record from Fabric
     const { contract } = await getFabric();
-    const resultBytes = await contract.evaluateTransaction("ReadAuditRecord", id);
+    const resultBytes = await contract.evaluateTransaction(
+      "ReadAuditRecord",
+      id
+    );
     const json = Buffer.from(resultBytes).toString("utf8");
     const auditRecord = JSON.parse(json);
 
     // Run deterministic rules first
     const rulesResult = validateAuditRules(auditRecord.Data);
-    
+
     // Analyze with Gemini (includes Responsible AI metadata)
     const { analysis, metadata } = await analyzeAudit(
       auditRecord.Data,
       rulesResult.score
     );
 
-    // Combine rule-based and LLM scores
-    const combinedRiskScore = Math.max(
-      rulesResult.score,
-      analysis.riskScore
+    // Combine rule-based and LLM feasibility scores
+    // Convert rules score (risk) to feasibility: feasibility = 100 - risk
+    const rulesFeasibilityScore = 100 - rulesResult.score;
+    const combinedFeasibilityScore = Math.min(
+      rulesFeasibilityScore,
+      analysis.riskScore // Already feasibility score from Gemini
     );
 
     // Store analysis in Fabric with full metadata
@@ -122,7 +130,7 @@ auditsRouter.post("/:id/analyze", async (req, res) => {
       auditId: id,
       analysis: {
         ...analysis,
-        riskScore: combinedRiskScore,
+        riskScore: combinedFeasibilityScore, // Store as feasibility score (field name kept for backward compatibility)
         rulesResult,
       },
       metadata,
@@ -138,13 +146,23 @@ auditsRouter.post("/:id/analyze", async (req, res) => {
       );
     } catch (error: any) {
       const errorMessage = extractChaincodeError(error);
-      
+
       // If analysis already exists (from auto-analysis), that's okay
-      if (errorMessage?.includes("already exists") || errorMessage?.includes("MVCC")) {
-        console.log(`ℹ️  Analysis for ${id} already exists, returning existing`);
-      } else if (errorMessage?.includes("function that does not exist") || errorMessage?.includes("ABORTED")) {
+      if (
+        errorMessage?.includes("already exists") ||
+        errorMessage?.includes("MVCC")
+      ) {
+        console.log(
+          `ℹ️  Analysis for ${id} already exists, returning existing`
+        );
+      } else if (
+        errorMessage?.includes("function that does not exist") ||
+        errorMessage?.includes("ABORTED")
+      ) {
         // Chaincode function not found - need to redeploy
-        console.warn(`⚠️  StoreAnalysis function not found. Please redeploy chaincode with version 1.3 and sequence 5.`);
+        console.warn(
+          `⚠️  StoreAnalysis function not found. Please redeploy chaincode with version 1.3 and sequence 5.`
+        );
         console.warn(`   Error: ${errorMessage}`);
       } else {
         console.warn(`Could not store analysis in Fabric: ${errorMessage}`);
@@ -156,7 +174,7 @@ auditsRouter.post("/:id/analyze", async (req, res) => {
       auditRecord,
       analysis: {
         ...analysis,
-        riskScore: combinedRiskScore,
+        riskScore: combinedFeasibilityScore, // Feasibility score (field name kept for backward compatibility)
         rulesResult,
       },
       metadata,
@@ -275,4 +293,3 @@ auditsRouter.delete("/", async (_req, res) => {
     });
   }
 });
-

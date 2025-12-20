@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FiAlertTriangle, FiCheckCircle, FiInfo, FiCpu, FiTarget, FiFileText } from "react-icons/fi";
+import {
+  FiAlertTriangle,
+  FiCheckCircle,
+  FiInfo,
+  FiCpu,
+  FiTarget,
+  FiFileText,
+} from "react-icons/fi";
 import Logo from "../../../components/ui/Logo";
 
 interface AuditAnalysisProps {
@@ -46,7 +53,9 @@ export default function AuditAnalysis({
 
   async function handleAnalyze() {
     if (!approved) {
-      setError("Please confirm that AI output is a suggestion before proceeding");
+      setError(
+        "Please confirm that AI output is a suggestion before proceeding"
+      );
       return;
     }
 
@@ -59,8 +68,14 @@ export default function AuditAnalysis({
       });
 
       if (!r.ok) {
-        const errorData = await r.json().catch(() => ({ error: "Analysis failed" }));
-        throw new Error(errorData?.error || errorData?.message || `Analysis failed: ${r.status} ${r.statusText}`);
+        const errorData = await r
+          .json()
+          .catch(() => ({ error: "Analysis failed" }));
+        throw new Error(
+          errorData?.error ||
+            errorData?.message ||
+            `Analysis failed: ${r.status} ${r.statusText}`
+        );
       }
 
       const data = await r.json();
@@ -83,31 +98,38 @@ export default function AuditAnalysis({
       }
 
       setAnalysis(analysisData);
-      
+
       // Notify parent components that analysis is updated
-      window.dispatchEvent(new CustomEvent('audit-analysis-updated', { 
-        detail: { auditId, analysis: analysisData } 
-      }));
+      window.dispatchEvent(
+        new CustomEvent("audit-analysis-updated", {
+          detail: { auditId, analysis: analysisData },
+        })
+      );
     } catch (e: any) {
       console.error("Analysis error:", e);
-      setError(e.message || "Failed to analyze audit. Please check console for details.");
+      setError(
+        e.message ||
+          "Failed to analyze audit. Please check console for details."
+      );
     } finally {
       setLoading(false);
     }
   }
 
-  function getRiskColor(score: number): string {
-    if (score <= 30) return "var(--success)";
-    if (score <= 60) return "var(--warning)";
-    if (score <= 80) return "var(--error)";
+  function getFeasibilityColor(score: number): string {
+    // Higher score = more feasible = better (green)
+    if (score >= 80) return "var(--success)";
+    if (score >= 60) return "var(--warning)";
+    if (score >= 30) return "var(--error)";
     return "#dc2626";
   }
 
-  function getRiskLabel(score: number): string {
-    if (score <= 30) return "Low Risk";
-    if (score <= 60) return "Medium Risk";
-    if (score <= 80) return "High Risk";
-    return "Critical Risk";
+  function getFeasibilityLabel(score: number): string {
+    // Higher score = more feasible
+    if (score >= 80) return "Highly Feasible";
+    if (score >= 60) return "Feasible";
+    if (score >= 30) return "Moderately Feasible";
+    return "Not Feasible";
   }
 
   const formatEvidencePage = (page: number | null | undefined): string => {
@@ -145,12 +167,33 @@ export default function AuditAnalysis({
           marginBottom: "var(--spacing-lg)",
         }}
       >
-        <h2 style={{ margin: 0, fontSize: "clamp(1.25rem, 4vw, 1.5rem)", fontWeight: 600, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "0.5rem", flexShrink: 0 }}>
+        <h2
+          style={{
+            margin: 0,
+            fontSize: "clamp(1.25rem, 4vw, 1.5rem)",
+            fontWeight: 600,
+            color: "var(--text-primary)",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            flexShrink: 0,
+          }}
+        >
           <FiCpu style={{ fontSize: "clamp(1.25rem, 4vw, 1.5rem)" }} />
           AI Analysis
         </h2>
         {!analysis && (
-          <div className="ai-analysis-controls" style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-md)", alignItems: "stretch", flex: "1 1 100%", minWidth: "280px" }}>
+          <div
+            className="ai-analysis-controls"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "var(--spacing-md)",
+              alignItems: "stretch",
+              flex: "1 1 100%",
+              minWidth: "280px",
+            }}
+          >
             <label
               style={{
                 display: "flex",
@@ -158,10 +201,13 @@ export default function AuditAnalysis({
                 gap: "var(--spacing-sm)",
                 fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
                 cursor: "pointer",
-                padding: "clamp(0.75rem, 2vw, var(--spacing-md)) clamp(1rem, 3vw, var(--spacing-lg))",
+                padding:
+                  "clamp(0.75rem, 2vw, var(--spacing-md)) clamp(1rem, 3vw, var(--spacing-lg))",
                 background: approved ? "var(--primary-bg)" : "var(--gray-50)",
                 borderRadius: "var(--radius-lg)",
-                border: approved ? "2px solid var(--primary)" : "2px solid var(--gray-300)",
+                border: approved
+                  ? "2px solid var(--primary)"
+                  : "2px solid var(--gray-300)",
                 transition: "all 0.2s ease",
                 fontWeight: 500,
               }}
@@ -179,16 +225,26 @@ export default function AuditAnalysis({
                   marginTop: "0.125rem",
                 }}
               />
-              <span style={{ fontWeight: 600, color: "var(--text-primary)", fontSize: "clamp(0.8125rem, 2.5vw, 0.9375rem)", lineHeight: 1.5 }}>
-                I understand AI analysis is a suggestion and requires human review
+              <span
+                style={{
+                  fontWeight: 600,
+                  color: "var(--text-primary)",
+                  fontSize: "clamp(0.8125rem, 2.5vw, 0.9375rem)",
+                  lineHeight: 1.5,
+                }}
+              >
+                I understand AI analysis is a suggestion and requires human
+                review
               </span>
             </label>
             <button
               onClick={handleAnalyze}
               disabled={loading || !approved}
               style={{
-                padding: "clamp(0.75rem, 2vw, var(--spacing-sm)) clamp(1rem, 3vw, var(--spacing-lg))",
-                background: loading || !approved ? "var(--gray-300)" : "var(--primary)",
+                padding:
+                  "clamp(0.75rem, 2vw, var(--spacing-sm)) clamp(1rem, 3vw, var(--spacing-lg))",
+                background:
+                  loading || !approved ? "var(--gray-300)" : "var(--primary)",
                 color: "white",
                 border: "none",
                 borderRadius: "var(--radius-lg)",
@@ -235,7 +291,14 @@ export default function AuditAnalysis({
             border: "1px solid var(--error)",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-sm)", marginBottom: "var(--spacing-xs)" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--spacing-sm)",
+              marginBottom: "var(--spacing-xs)",
+            }}
+          >
             <FiAlertTriangle style={{ fontSize: "1rem" }} />
             <strong>Analysis Error</strong>
           </div>
@@ -263,11 +326,19 @@ export default function AuditAnalysis({
           >
             <Logo size={48} withShadow={true} />
           </motion.div>
-          <p style={{ fontSize: "1rem", fontWeight: 500, marginBottom: "var(--spacing-sm)" }}>
+          <p
+            style={{
+              fontSize: "1rem",
+              fontWeight: 500,
+              marginBottom: "var(--spacing-sm)",
+            }}
+          >
             {loadingExisting ? "Loading analysis..." : "Analyzing with AI..."}
           </p>
           <p style={{ fontSize: "0.875rem", color: "var(--gray-500)" }}>
-            {loadingExisting ? "Checking for existing analysis" : "This may take a few seconds"}
+            {loadingExisting
+              ? "Checking for existing analysis"
+              : "This may take a few seconds"}
           </p>
         </motion.div>
       )}
@@ -296,13 +367,20 @@ export default function AuditAnalysis({
                 <FiInfo style={{ fontSize: "1.25rem", color: "var(--info)" }} />
                 Summary
               </h3>
-              <p style={{ margin: 0, lineHeight: 1.7, color: "var(--text-secondary)", fontSize: "0.9375rem" }}>
+              <p
+                style={{
+                  margin: 0,
+                  lineHeight: 1.7,
+                  color: "var(--text-secondary)",
+                  fontSize: "0.9375rem",
+                }}
+              >
                 {analysis.summary}
               </p>
             </div>
           )}
 
-          {/* Risk Score */}
+          {/* Feasibility Score */}
           {analysis.riskScore !== undefined && analysis.riskScore !== null && (
             <div>
               <h3
@@ -313,15 +391,22 @@ export default function AuditAnalysis({
                   color: "var(--text-primary)",
                 }}
               >
-                Risk Assessment
+                Feasibility Assessment
               </h3>
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-xl)", flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--spacing-xl)",
+                  flexWrap: "wrap",
+                }}
+              >
                 <div
                   style={{
                     width: "120px",
                     height: "120px",
                     borderRadius: "50%",
-                    background: `conic-gradient(${getRiskColor(
+                    background: `conic-gradient(${getFeasibilityColor(
                       analysis.riskScore
                     )} 0% ${analysis.riskScore}%, var(--gray-200) ${
                       analysis.riskScore
@@ -342,14 +427,20 @@ export default function AuditAnalysis({
                     style={{
                       fontSize: "1.5rem",
                       fontWeight: 700,
-                      color: getRiskColor(analysis.riskScore),
+                      color: getFeasibilityColor(analysis.riskScore),
                       marginBottom: "var(--spacing-xs)",
                     }}
                   >
-                    {getRiskLabel(analysis.riskScore)}
+                    {getFeasibilityLabel(analysis.riskScore)}
                   </div>
                   {analysis.confidence && (
-                    <div style={{ fontSize: "0.875rem", color: "var(--text-tertiary)", marginTop: "var(--spacing-xs)" }}>
+                    <div
+                      style={{
+                        fontSize: "0.875rem",
+                        color: "var(--text-tertiary)",
+                        marginTop: "var(--spacing-xs)",
+                      }}
+                    >
                       Confidence: {analysis.confidence}%
                     </div>
                   )}
@@ -372,10 +463,18 @@ export default function AuditAnalysis({
                   gap: "var(--spacing-sm)",
                 }}
               >
-                <FiAlertTriangle style={{ fontSize: "1.5rem", color: "var(--error)" }} />
+                <FiAlertTriangle
+                  style={{ fontSize: "1.5rem", color: "var(--error)" }}
+                />
                 Risk Factors
               </h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-md)" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "var(--spacing-md)",
+                }}
+              >
                 {analysis.reasons.map((reason: string, idx: number) => (
                   <div
                     key={idx}
@@ -389,7 +488,14 @@ export default function AuditAnalysis({
                       lineHeight: 1.7,
                     }}
                   >
-                    <strong style={{ color: "var(--error)", marginRight: "var(--spacing-xs)" }}>•</strong>
+                    <strong
+                      style={{
+                        color: "var(--error)",
+                        marginRight: "var(--spacing-xs)",
+                      }}
+                    >
+                      •
+                    </strong>
                     {reason}
                   </div>
                 ))}
@@ -398,43 +504,61 @@ export default function AuditAnalysis({
           )}
 
           {/* Suggested Next Steps */}
-          {analysis.suggestedNextSteps && analysis.suggestedNextSteps.length > 0 && (
-            <div>
-              <h3
-                style={{
-                  marginBottom: "var(--spacing-lg)",
-                  fontSize: "1.25rem",
-                  fontWeight: 600,
-                  color: "var(--text-primary)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "var(--spacing-sm)",
-                }}
-              >
-                <FiCheckCircle style={{ fontSize: "1.5rem", color: "var(--success)" }} />
-                Recommended Actions
-              </h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-md)" }}>
-                {analysis.suggestedNextSteps.map((step: string, idx: number) => (
-                  <div
-                    key={idx}
-                    style={{
-                      padding: "var(--spacing-md)",
-                      background: "#dcfce715",
-                      borderLeft: "4px solid var(--success)",
-                      borderRadius: "var(--radius-md)",
-                      color: "var(--gray-800)",
-                      fontSize: "0.9375rem",
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    <strong style={{ color: "var(--success)", marginRight: "var(--spacing-xs)" }}>✓</strong>
-                    {step}
-                  </div>
-                ))}
+          {analysis.suggestedNextSteps &&
+            analysis.suggestedNextSteps.length > 0 && (
+              <div>
+                <h3
+                  style={{
+                    marginBottom: "var(--spacing-lg)",
+                    fontSize: "1.25rem",
+                    fontWeight: 600,
+                    color: "var(--text-primary)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "var(--spacing-sm)",
+                  }}
+                >
+                  <FiCheckCircle
+                    style={{ fontSize: "1.5rem", color: "var(--success)" }}
+                  />
+                  Recommended Actions
+                </h3>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "var(--spacing-md)",
+                  }}
+                >
+                  {analysis.suggestedNextSteps.map(
+                    (step: string, idx: number) => (
+                      <div
+                        key={idx}
+                        style={{
+                          padding: "var(--spacing-md)",
+                          background: "#dcfce715",
+                          borderLeft: "4px solid var(--success)",
+                          borderRadius: "var(--radius-md)",
+                          color: "var(--gray-800)",
+                          fontSize: "0.9375rem",
+                          lineHeight: 1.7,
+                        }}
+                      >
+                        <strong
+                          style={{
+                            color: "var(--success)",
+                            marginRight: "var(--spacing-xs)",
+                          }}
+                        >
+                          ✓
+                        </strong>
+                        {step}
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Evidence Links */}
           {auditData?.evidence && auditData.evidence.length > 0 && (
@@ -450,10 +574,18 @@ export default function AuditAnalysis({
                   gap: "var(--spacing-sm)",
                 }}
               >
-                <FiInfo style={{ fontSize: "1.25rem", marginRight: "0.5rem" }} />
+                <FiInfo
+                  style={{ fontSize: "1.25rem", marginRight: "0.5rem" }}
+                />
                 Evidence References
               </h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-md)" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "var(--spacing-md)",
+                }}
+              >
                 {auditData.evidence.map((ev: any, idx: number) => (
                   <div
                     key={idx}
@@ -495,7 +627,8 @@ export default function AuditAnalysis({
                           borderRadius: "var(--radius-sm)",
                         }}
                       >
-                        {ev.field?.replace(/([A-Z])/g, " $1").trim() || "Unknown Field"}
+                        {ev.field?.replace(/([A-Z])/g, " $1").trim() ||
+                          "Unknown Field"}
                       </span>
                       <span
                         style={{
@@ -511,7 +644,9 @@ export default function AuditAnalysis({
                           boxShadow: "var(--shadow-sm)",
                         }}
                       >
-                        {ev.page === null || ev.page === undefined || ev.page === 0 ? (
+                        {ev.page === null ||
+                        ev.page === undefined ||
+                        ev.page === 0 ? (
                           <FiAlertTriangle style={{ fontSize: "0.8125rem" }} />
                         ) : (
                           <FiInfo style={{ fontSize: "0.8125rem" }} />
@@ -568,19 +703,35 @@ export default function AuditAnalysis({
                     key={idx}
                     style={{
                       padding: "0.5rem 1rem",
-                      background: rule.passed ? "var(--success)" : "var(--error)",
+                      background: rule.passed
+                        ? "var(--success)"
+                        : "var(--error)",
                       color: "white",
                       borderRadius: "var(--radius-md)",
                       fontSize: "0.75rem",
                       fontWeight: 600,
                     }}
                   >
-                    {rule.passed ? <FiCheckCircle style={{ fontSize: "0.75rem", marginRight: "0.25rem" }} /> : <FiAlertTriangle style={{ fontSize: "0.75rem", marginRight: "0.25rem" }} />} {rule.rule}
+                    {rule.passed ? (
+                      <FiCheckCircle
+                        style={{ fontSize: "0.75rem", marginRight: "0.25rem" }}
+                      />
+                    ) : (
+                      <FiAlertTriangle
+                        style={{ fontSize: "0.75rem", marginRight: "0.25rem" }}
+                      />
+                    )}{" "}
+                    {rule.rule}
                   </span>
                 ))}
               </div>
               {analysis.rulesResult.score > 0 && (
-                <div style={{ fontSize: "0.875rem", color: "var(--text-tertiary)" }}>
+                <div
+                  style={{
+                    fontSize: "0.875rem",
+                    color: "var(--text-tertiary)",
+                  }}
+                >
                   Rules Score: {analysis.rulesResult.score}/100
                 </div>
               )}
@@ -600,7 +751,13 @@ export default function AuditAnalysis({
               >
                 Policy Compliance Flags
               </h3>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-sm)" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "var(--spacing-sm)",
+                }}
+              >
                 {analysis.policyFlags.map((flag: string, idx: number) => (
                   <span
                     key={idx}
@@ -655,16 +812,33 @@ export default function AuditAnalysis({
           >
             <Logo size={48} withShadow={true} />
           </div>
-          <h3 style={{ fontSize: "1.25rem", marginBottom: "var(--spacing-md)", fontWeight: 600, color: "var(--text-primary)" }}>
+          <h3
+            style={{
+              fontSize: "1.25rem",
+              marginBottom: "var(--spacing-md)",
+              fontWeight: 600,
+              color: "var(--text-primary)",
+            }}
+          >
             AI-Powered Risk Analysis
           </h3>
-          <p style={{ fontSize: "1rem", marginBottom: "var(--spacing-lg)", fontWeight: 500, color: "var(--text-secondary)", maxWidth: "600px", margin: "0 auto var(--spacing-lg)" }}>
+          <p
+            style={{
+              fontSize: "1rem",
+              marginBottom: "var(--spacing-lg)",
+              fontWeight: 500,
+              color: "var(--text-secondary)",
+              maxWidth: "600px",
+              margin: "0 auto var(--spacing-lg)",
+            }}
+          >
             Get comprehensive insights to make informed procurement decisions
           </p>
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
               gap: "clamp(var(--spacing-sm), 2vw, var(--spacing-md))",
               marginTop: "var(--spacing-xl)",
               textAlign: "left",
@@ -672,20 +846,107 @@ export default function AuditAnalysis({
               margin: "var(--spacing-xl) auto 0",
             }}
           >
-            <div style={{ padding: "clamp(0.75rem, 2vw, var(--spacing-md))", background: "var(--bg-secondary)", borderRadius: "var(--radius-md)" }}>
-              <FiTarget style={{ fontSize: "clamp(1.25rem, 4vw, 1.5rem)", marginBottom: "var(--spacing-xs)", color: "var(--primary)" }} />
-              <div style={{ fontWeight: 600, marginBottom: "var(--spacing-xs)", color: "var(--text-primary)", fontSize: "clamp(0.9375rem, 2.5vw, 1rem)" }}>Risk Assessment</div>
-              <div style={{ fontSize: "clamp(0.8125rem, 2vw, 0.875rem)", color: "var(--text-tertiary)", lineHeight: 1.5 }}>0-100 risk score with detailed breakdown</div>
+            <div
+              style={{
+                padding: "clamp(0.75rem, 2vw, var(--spacing-md))",
+                background: "var(--bg-secondary)",
+                borderRadius: "var(--radius-md)",
+              }}
+            >
+              <FiTarget
+                style={{
+                  fontSize: "clamp(1.25rem, 4vw, 1.5rem)",
+                  marginBottom: "var(--spacing-xs)",
+                  color: "var(--primary)",
+                }}
+              />
+              <div
+                style={{
+                  fontWeight: 600,
+                  marginBottom: "var(--spacing-xs)",
+                  color: "var(--text-primary)",
+                  fontSize: "clamp(0.9375rem, 2.5vw, 1rem)",
+                }}
+              >
+                Risk Assessment
+              </div>
+              <div
+                style={{
+                  fontSize: "clamp(0.8125rem, 2vw, 0.875rem)",
+                  color: "var(--text-tertiary)",
+                  lineHeight: 1.5,
+                }}
+              >
+                0-100 feasibility score with detailed breakdown
+              </div>
             </div>
-            <div style={{ padding: "clamp(0.75rem, 2vw, var(--spacing-md))", background: "var(--bg-secondary)", borderRadius: "var(--radius-md)" }}>
-              <FiCheckCircle style={{ fontSize: "clamp(1.25rem, 4vw, 1.5rem)", marginBottom: "var(--spacing-xs)", color: "var(--success)" }} />
-              <div style={{ fontWeight: 600, marginBottom: "var(--spacing-xs)", color: "var(--text-primary)", fontSize: "clamp(0.9375rem, 2.5vw, 1rem)" }}>Recommended Actions</div>
-              <div style={{ fontSize: "clamp(0.8125rem, 2vw, 0.875rem)", color: "var(--text-tertiary)", lineHeight: 1.5 }}>Actionable next steps tailored to findings</div>
+            <div
+              style={{
+                padding: "clamp(0.75rem, 2vw, var(--spacing-md))",
+                background: "var(--bg-secondary)",
+                borderRadius: "var(--radius-md)",
+              }}
+            >
+              <FiCheckCircle
+                style={{
+                  fontSize: "clamp(1.25rem, 4vw, 1.5rem)",
+                  marginBottom: "var(--spacing-xs)",
+                  color: "var(--success)",
+                }}
+              />
+              <div
+                style={{
+                  fontWeight: 600,
+                  marginBottom: "var(--spacing-xs)",
+                  color: "var(--text-primary)",
+                  fontSize: "clamp(0.9375rem, 2.5vw, 1rem)",
+                }}
+              >
+                Recommended Actions
+              </div>
+              <div
+                style={{
+                  fontSize: "clamp(0.8125rem, 2vw, 0.875rem)",
+                  color: "var(--text-tertiary)",
+                  lineHeight: 1.5,
+                }}
+              >
+                Actionable next steps tailored to findings
+              </div>
             </div>
-            <div style={{ padding: "clamp(0.75rem, 2vw, var(--spacing-md))", background: "var(--bg-secondary)", borderRadius: "var(--radius-md)" }}>
-              <FiFileText style={{ fontSize: "clamp(1.25rem, 4vw, 1.5rem)", marginBottom: "var(--spacing-xs)", color: "var(--info)" }} />
-              <div style={{ fontWeight: 600, marginBottom: "var(--spacing-xs)", color: "var(--text-primary)", fontSize: "clamp(0.9375rem, 2.5vw, 1rem)" }}>Evidence Links</div>
-              <div style={{ fontSize: "clamp(0.8125rem, 2vw, 0.875rem)", color: "var(--text-tertiary)", lineHeight: 1.5 }}>Direct references to source documents</div>
+            <div
+              style={{
+                padding: "clamp(0.75rem, 2vw, var(--spacing-md))",
+                background: "var(--bg-secondary)",
+                borderRadius: "var(--radius-md)",
+              }}
+            >
+              <FiFileText
+                style={{
+                  fontSize: "clamp(1.25rem, 4vw, 1.5rem)",
+                  marginBottom: "var(--spacing-xs)",
+                  color: "var(--info)",
+                }}
+              />
+              <div
+                style={{
+                  fontWeight: 600,
+                  marginBottom: "var(--spacing-xs)",
+                  color: "var(--text-primary)",
+                  fontSize: "clamp(0.9375rem, 2.5vw, 1rem)",
+                }}
+              >
+                Evidence Links
+              </div>
+              <div
+                style={{
+                  fontSize: "clamp(0.8125rem, 2vw, 0.875rem)",
+                  color: "var(--text-tertiary)",
+                  lineHeight: 1.5,
+                }}
+              >
+                Direct references to source documents
+              </div>
             </div>
           </div>
         </div>

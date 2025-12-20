@@ -25,17 +25,17 @@ export function incrementRateLimit(): void {
  */
 function normalizeDate(dateStr: string | undefined): string | undefined {
   if (!dateStr) return undefined;
-  
+
   try {
     const date = new Date(dateStr);
     if (!isNaN(date.getTime())) {
       // Convert to ISO format (YYYY-MM-DD)
-      return date.toISOString().split('T')[0];
+      return date.toISOString().split("T")[0];
     }
   } catch (e) {
     // If parsing fails, return original
   }
-  
+
   return dateStr;
 }
 
@@ -56,12 +56,32 @@ export type AuditExtracted = z.infer<typeof AuditSchema>;
 
 // AI Analysis Schema
 export const AuditAnalysisSchema = z.object({
-  summary: z.string().describe("Brief summary of the audit record (2-3 sentences)"),
-  riskScore: z.number().min(0).max(100).describe("Risk score from 0 (low) to 100 (critical)"),
-  reasons: z.array(z.string()).describe("List of specific reasons for the risk score"),
-  suggestedNextSteps: z.array(z.string()).describe("Recommended actions to take"),
-  confidence: z.number().min(0).max(100).optional().describe("AI confidence level in the analysis"),
-  policyFlags: z.array(z.string()).optional().describe("Any policy compliance flags"),
+  summary: z
+    .string()
+    .describe("Brief summary of the audit record (2-3 sentences)"),
+  riskScore: z
+    .number()
+    .min(0)
+    .max(100)
+    .describe(
+      "Feasibility score from 0 (not feasible) to 100 (highly feasible). Calculated as inverse of risk factors."
+    ),
+  reasons: z
+    .array(z.string())
+    .describe("List of specific reasons for the feasibility score"),
+  suggestedNextSteps: z
+    .array(z.string())
+    .describe("Recommended actions to take"),
+  confidence: z
+    .number()
+    .min(0)
+    .max(100)
+    .optional()
+    .describe("AI confidence level in the analysis"),
+  policyFlags: z
+    .array(z.string())
+    .optional()
+    .describe("Any policy compliance flags"),
 });
 
 export type AuditAnalysis = z.infer<typeof AuditAnalysisSchema>;
@@ -98,7 +118,7 @@ function fallbackExtractAuditFromText(text: string): AuditExtracted {
     { pattern: /payment|transfer|wire/i, type: "payment" },
     { pattern: /purchase.?order|po-/i, type: "purchase_order" },
   ];
-  
+
   for (const { pattern, type } of typePatterns) {
     if (pattern.test(text)) {
       extracted.type = type;
@@ -107,7 +127,9 @@ function fallbackExtractAuditFromText(text: string): AuditExtracted {
   }
 
   // Extract amount
-  const amountMatch = text.match(/(?:amount|value|total|price)[\s:]*\$?([\d,]+\.?\d*)/i);
+  const amountMatch = text.match(
+    /(?:amount|value|total|price)[\s:]*\$?([\d,]+\.?\d*)/i
+  );
   if (amountMatch) {
     extracted.amount = parseFloat(amountMatch[1].replace(/,/g, ""));
   }
@@ -119,20 +141,24 @@ function fallbackExtractAuditFromText(text: string): AuditExtracted {
   }
 
   // Extract vendor
-  const vendorMatch = text.match(/(?:from|vendor|supplier|company)[\s:]+([A-Z][A-Za-z\s&]+?)(?:\.|,|$)/i);
+  const vendorMatch = text.match(
+    /(?:from|vendor|supplier|company)[\s:]+([A-Z][A-Za-z\s&]+?)(?:\.|,|$)/i
+  );
   if (vendorMatch) {
     extracted.vendor = vendorMatch[1].trim();
   }
 
   // Extract date and normalize to ISO format
-  const dateMatch = text.match(/(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|\w+\s+\d{1,2},?\s+\d{4})/);
+  const dateMatch = text.match(
+    /(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|\w+\s+\d{1,2},?\s+\d{4})/
+  );
   if (dateMatch) {
     const dateStr = dateMatch[1];
     try {
       const date = new Date(dateStr);
       if (!isNaN(date.getTime())) {
         // Convert to ISO format (YYYY-MM-DD)
-        extracted.date = date.toISOString().split('T')[0];
+        extracted.date = date.toISOString().split("T")[0];
       } else {
         extracted.date = dateStr; // Keep original if parsing fails
       }
@@ -248,7 +274,11 @@ Extract the audit information and return it as a structured JSON object followin
     return validated;
   } catch (error: any) {
     // Handle quota/rate limit errors - still use fallback if API fails
-    if (error.message?.includes("429") || error.message?.includes("quota") || error.message?.includes("rate limit")) {
+    if (
+      error.message?.includes("429") ||
+      error.message?.includes("quota") ||
+      error.message?.includes("rate limit")
+    ) {
       console.warn("⚠️  Gemini API quota exceeded. Using fallback extraction.");
       return fallbackExtractAuditFromText(text);
     }
@@ -274,110 +304,143 @@ function fallbackAnalyzeAudit(
   let hasFutureDate = false;
   let hasInvalidDate = false;
   let hasMissingCurrency = false;
-  
+
   if (auditData.date) {
     try {
       const date = new Date(auditData.date);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       date.setHours(0, 0, 0, 0);
-      
+
       if (date > today) {
         hasFutureDate = true;
-        reasons.push(`Future date detected: ${auditData.date} - This is unusual and may indicate an error`);
+        reasons.push(
+          `Future date detected: ${auditData.date} - This is unusual and may indicate an error`
+        );
       }
     } catch (e) {
       hasInvalidDate = true;
-      reasons.push(`Invalid date format: ${auditData.date} - Date cannot be parsed`);
+      reasons.push(
+        `Invalid date format: ${auditData.date} - Date cannot be parsed`
+      );
     }
   }
-  
+
   if (!auditData.currency && auditData.amount) {
     hasMissingCurrency = true;
-    reasons.push("Currency missing for monetary amount - This may cause accounting issues");
+    reasons.push(
+      "Currency missing for monetary amount - This may cause accounting issues"
+    );
   }
-  
+
   if (auditData.riskFlags?.length) {
     reasons.push(...auditData.riskFlags);
   }
-  
+
   if (reasons.length === 0) {
     reasons.push("Standard audit record - no major issues detected");
   }
-  
-  // Calculate risk score based on issues found
+
+  // Calculate risk score based on issues found (0-100, higher = more risk)
   // Start with rules score (already includes future date, missing currency, etc.)
   let riskScore = rulesScore;
-  
+
   // Add penalties for additional issues found in fallback analysis
   // (rulesScore already covers: negative amount, missing currency, future date, large amount, missing vendor, invalid date format)
-  
+
   if (hasInvalidDate && !rulesScore) {
     // Invalid date adds 3 points if not already counted in rules
     riskScore += 3;
   }
-  
+
   // Risk flags add significant weight (8 points per flag, minimum 40 if any flags exist)
   if (auditData.riskFlags?.length) {
     const flagsPenalty = Math.min(60, auditData.riskFlags.length * 12);
     riskScore = Math.max(riskScore, flagsPenalty);
   }
-  
+
   // Additional context-based adjustments
   // Very large amounts (over 100k) add extra risk
-  if (auditData.amount && auditData.amount > 100000 && auditData.amount <= 1000000) {
+  if (
+    auditData.amount &&
+    auditData.amount > 100000 &&
+    auditData.amount <= 1000000
+  ) {
     riskScore = Math.max(riskScore, rulesScore + 3);
   }
-  
+
   // Cap at 100
   riskScore = Math.min(100, riskScore);
-  
+
   // If no issues at all, set to low risk (10-15 range)
-  if (riskScore === 0 && reasons.length === 1 && reasons[0].includes("no major issues")) {
+  if (
+    riskScore === 0 &&
+    reasons.length === 1 &&
+    reasons[0].includes("no major issues")
+  ) {
     riskScore = 12; // Very low risk for clean records
-  } else if (riskScore === 0 && rulesScore === 0 && !hasFutureDate && !hasInvalidDate && !hasMissingCurrency && !auditData.riskFlags?.length) {
+  } else if (
+    riskScore === 0 &&
+    rulesScore === 0 &&
+    !hasFutureDate &&
+    !hasInvalidDate &&
+    !hasMissingCurrency &&
+    !auditData.riskFlags?.length
+  ) {
     // Truly no issues
     riskScore = 10;
   }
-  
+
   // Ensure minimum visibility for any detected issues
   if (rulesScore > 0 && riskScore < rulesScore) {
     riskScore = rulesScore; // Don't go below rules score if rules found issues
   }
-  
+
+  // Convert risk score to feasibility score (inverse: 100 - risk)
+  // Higher feasibility = less risk = more feasible
+  const feasibilityScore = 100 - riskScore;
+
   // More specific next steps based on issues
   const suggestedNextSteps: string[] = [];
-  
+
   if (hasFutureDate) {
-    suggestedNextSteps.push("Verify the date is correct - future dates are unusual");
+    suggestedNextSteps.push(
+      "Verify the date is correct - future dates are unusual"
+    );
     suggestedNextSteps.push("Contact vendor to confirm invoice/delivery date");
     suggestedNextSteps.push("Check if this is a pre-dated or advance payment");
   }
-  
+
   if (hasInvalidDate) {
     suggestedNextSteps.push("Correct the date format to ISO (YYYY-MM-DD)");
     suggestedNextSteps.push("Verify the original document date");
   }
-  
+
   if (hasMissingCurrency) {
     suggestedNextSteps.push("Add currency information to the record");
     suggestedNextSteps.push("Verify currency with vendor");
   }
-  
-  if (riskScore > 50) {
+
+  if (feasibilityScore < 50) {
     suggestedNextSteps.push("Review record details for accuracy");
     suggestedNextSteps.push("Verify vendor information");
     suggestedNextSteps.push("Check compliance with company policies");
   }
-  
+
   if (suggestedNextSteps.length === 0) {
     suggestedNextSteps.push("Standard processing");
     suggestedNextSteps.push("Archive record");
   }
-  
+
   const analysis: AuditAnalysis = {
-    summary: `Audit record of type "${auditData.type || "unknown"}"${auditData.vendor ? ` from ${auditData.vendor}` : ""}${auditData.amount ? ` with amount ${auditData.amount} ${auditData.currency || ""}` : ""}${auditData.date ? `. Date: ${auditData.date}` : ""}.`,
-    riskScore,
+    summary: `Audit record of type "${auditData.type || "unknown"}"${
+      auditData.vendor ? ` from ${auditData.vendor}` : ""
+    }${
+      auditData.amount
+        ? ` with amount ${auditData.amount} ${auditData.currency || ""}`
+        : ""
+    }${auditData.date ? `. Date: ${auditData.date}` : ""}.`,
+    riskScore: feasibilityScore, // Store as feasibility score (field name kept for backward compatibility)
     reasons,
     suggestedNextSteps,
     confidence: 60,
@@ -388,11 +451,14 @@ function fallbackAnalyzeAudit(
     model: "fallback",
     promptVersion: "fallback-1.0",
     promptHash: "fallback",
-    inputHash: crypto.createHash("sha256").update(JSON.stringify(auditData)).digest("hex"),
+    inputHash: crypto
+      .createHash("sha256")
+      .update(JSON.stringify(auditData))
+      .digest("hex"),
     analysisTimestamp: new Date().toISOString(),
     confidence: 60,
     rulesScore,
-    llmScore: riskScore,
+    llmScore: feasibilityScore,
   };
 
   return { analysis, metadata };
@@ -420,12 +486,13 @@ ${JSON.stringify(auditData, null, 2)}
 
 TASK:
 1. Provide a brief summary (2-3 sentences) of what this audit record represents
-2. Calculate a risk score from 0-100 where:
-   - 0-30: Low risk (normal operations)
-   - 31-60: Medium risk (needs attention)
-   - 61-80: High risk (requires immediate review)
-   - 81-100: Critical risk (urgent action required)
-3. List specific reasons for the risk score (be specific and actionable)
+2. Calculate a feasibility score from 0-100 where:
+   - 81-100: Highly feasible (normal operations, low risk)
+   - 61-80: Feasible (minor issues, needs attention)
+   - 31-60: Moderately feasible (some concerns, requires review)
+   - 0-30: Not feasible (high risk, urgent action required)
+   Note: Feasibility score is the inverse of risk (100 - risk). Higher score = more feasible/less risky.
+3. List specific reasons for the feasibility score (be specific and actionable)
 4. Suggest concrete next steps (what should be done)
 5. Assess your confidence level (0-100) in this analysis
 6. Identify any policy compliance flags if present
@@ -452,14 +519,15 @@ Return your analysis as a structured JSON object.
         },
         riskScore: {
           type: "number",
-          description: "Risk score from 0 (low) to 100 (critical)",
+          description:
+            "Feasibility score from 0 (not feasible) to 100 (highly feasible). Higher = more feasible/less risky.",
           minimum: 0,
           maximum: 100,
         },
         reasons: {
           type: "array",
           items: { type: "string" },
-          description: "List of specific reasons for the risk score",
+          description: "List of specific reasons for the feasibility score",
         },
         suggestedNextSteps: {
           type: "array",
@@ -519,7 +587,11 @@ Return your analysis as a structured JSON object.
     return { analysis: validated, metadata };
   } catch (error: any) {
     // Handle quota/rate limit errors - still use fallback if API fails
-    if (error.message?.includes("429") || error.message?.includes("quota") || error.message?.includes("rate limit")) {
+    if (
+      error.message?.includes("429") ||
+      error.message?.includes("quota") ||
+      error.message?.includes("rate limit")
+    ) {
       console.warn("⚠️  Gemini API quota exceeded. Using fallback analysis.");
       return fallbackAnalyzeAudit(auditData, rulesScore || 0);
     }
