@@ -162,10 +162,7 @@ export default function AuditsPageClient({
               marginBottom: "var(--spacing-xs)",
             }}
           >
-            <Logo size={40} withShadow={true} />
-            <h1 style={{ margin: 0, fontSize: "clamp(1.75rem, 4vw, 2.5rem)" }}>
-              Audit Ledger
-            </h1>
+          <Logo showText={false} style={{ height: "100px", width: "auto" }} />
           </div>
           <p
             style={{

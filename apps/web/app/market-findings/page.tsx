@@ -41,7 +41,7 @@ export default function MarketFindingsPage() {
           flexWrap: "wrap",
         }}
       >
-        <Logo size={40} withShadow={true} />
+        <Logo showText={false} style={{ height: "100px", width: "auto" }} />
         <h1
           style={{
             margin: 0,
@@ -95,7 +95,7 @@ export default function MarketFindingsPage() {
                 color: "white",
               }}
             >
-              Who it's for
+              Who it&apos;s for
             </h2>
           </div>
           <p
@@ -128,9 +128,16 @@ export default function MarketFindingsPage() {
                 fontSize: "0.95rem",
               }}
             >
-              <span style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}>•</span>
+              <span
+                style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}
+              >
+                •
+              </span>
               <span>
-                <strong style={{ color: "white" }}>Procurement & Finance</strong> (daily users)
+                <strong style={{ color: "white" }}>
+                  Procurement & Finance
+                </strong>{" "}
+                (daily users)
               </span>
             </li>
             <li
@@ -142,9 +149,16 @@ export default function MarketFindingsPage() {
                 fontSize: "0.95rem",
               }}
             >
-              <span style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}>•</span>
+              <span
+                style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}
+              >
+                •
+              </span>
               <span>
-                <strong style={{ color: "white" }}>Compliance / Internal Audit</strong> (trust + traceability)
+                <strong style={{ color: "white" }}>
+                  Compliance / Internal Audit
+                </strong>{" "}
+                (trust + traceability)
               </span>
             </li>
             <li
@@ -156,9 +170,14 @@ export default function MarketFindingsPage() {
                 fontSize: "0.95rem",
               }}
             >
-              <span style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}>•</span>
+              <span
+                style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}
+              >
+                •
+              </span>
               <span>
-                <strong style={{ color: "white" }}>Developers</strong> (the team that integrates and ships it internally)
+                <strong style={{ color: "white" }}>Developers</strong> (the team
+                that integrates and ships it internally)
               </span>
             </li>
           </ul>
@@ -231,9 +250,16 @@ export default function MarketFindingsPage() {
                 fontSize: "0.95rem",
               }}
             >
-              <span style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}>•</span>
+              <span
+                style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}
+              >
+                •
+              </span>
               <span>
-                <strong style={{ color: "white" }}>Excel + manual copy/paste from PDFs</strong> (slow, inconsistent)
+                <strong style={{ color: "white" }}>
+                  Excel + manual copy/paste from PDFs
+                </strong>{" "}
+                (slow, inconsistent)
               </span>
             </li>
             <li
@@ -245,9 +271,14 @@ export default function MarketFindingsPage() {
                 fontSize: "0.95rem",
               }}
             >
-              <span style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}>•</span>
+              <span
+                style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}
+              >
+                •
+              </span>
               <span>
-                <strong style={{ color: "white" }}>Procurement suites</strong> (powerful, but often heavy for RFQ PDF comparison)
+                <strong style={{ color: "white" }}>Procurement suites</strong>{" "}
+                (powerful, but often heavy for RFQ PDF comparison)
               </span>
             </li>
             <li
@@ -259,9 +290,16 @@ export default function MarketFindingsPage() {
                 fontSize: "0.95rem",
               }}
             >
-              <span style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}>•</span>
+              <span
+                style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}
+              >
+                •
+              </span>
               <span>
-                <strong style={{ color: "white" }}>Contract/document AI tools</strong> (adjacent, but not RFQ-offer decisioning)
+                <strong style={{ color: "white" }}>
+                  Contract/document AI tools
+                </strong>{" "}
+                (adjacent, but not RFQ-offer decisioning)
               </span>
             </li>
           </ul>
@@ -279,7 +317,7 @@ export default function MarketFindingsPage() {
             }}
           >
             The hidden cost is always the same: time lost + weak evidence when
-            someone asks "why did we pick this vendor?"
+            someone asks &quot;why did we pick this vendor?&quot;
           </p>
         </motion.section>
 
@@ -401,7 +439,11 @@ export default function MarketFindingsPage() {
                 fontSize: "0.95rem",
               }}
             >
-              <span style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}>•</span>
+              <span
+                style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}
+              >
+                •
+              </span>
               <span>procurement workflows,</span>
             </li>
             <li
@@ -413,7 +455,11 @@ export default function MarketFindingsPage() {
                 fontSize: "0.95rem",
               }}
             >
-              <span style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}>•</span>
+              <span
+                style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}
+              >
+                •
+              </span>
               <span>negotiation savings,</span>
             </li>
             <li
@@ -425,7 +471,11 @@ export default function MarketFindingsPage() {
                 fontSize: "0.95rem",
               }}
             >
-              <span style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}>•</span>
+              <span
+                style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}
+              >
+                •
+              </span>
               <span>RFP/vendor management,</span>
             </li>
             <li
@@ -437,7 +487,11 @@ export default function MarketFindingsPage() {
                 fontSize: "0.95rem",
               }}
             >
-              <span style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}>•</span>
+              <span
+                style={{ color: "var(--primary-light)", marginTop: "0.25rem" }}
+              >
+                •
+              </span>
               <span>AI document intelligence.</span>
             </li>
           </ul>
@@ -453,7 +507,9 @@ export default function MarketFindingsPage() {
               borderLeft: "3px solid var(--success)",
             }}
           >
-            <strong style={{ color: "white" }}>ProcurePilot's wedge is narrower but sharper:</strong>{" "}
+            <strong style={{ color: "white" }}>
+              ProcurePilot&apos;s wedge is narrower but sharper:
+            </strong>{" "}
             offer PDFs → evidence → recommendation → audit trail.
           </p>
         </motion.section>
@@ -563,7 +619,7 @@ export default function MarketFindingsPage() {
                 fontStyle: "italic",
               }}
             >
-              Not "AI said so," but:
+              Not &quot;AI said so,&quot; but:
             </p>
             <ul
               style={{
@@ -855,4 +911,3 @@ export default function MarketFindingsPage() {
     </motion.div>
   );
 }
-

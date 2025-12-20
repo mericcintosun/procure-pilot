@@ -82,7 +82,7 @@ export default function Hero() {
             marginBottom: "var(--spacing-lg)",
           }}
         >
-          <Logo size={80} withShadow={true} />
+          <Logo showText={false} style={{ height: "100px", width: "auto" }} />
           <div
             style={{
               display: "inline-block",

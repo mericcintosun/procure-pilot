@@ -324,8 +324,7 @@ export default function AuditAnalysis({
               display: "inline-block",
             }}
           >
-            <Logo size={48} withShadow={true} />
-          </motion.div>
+          <Logo showText={false} style={{ height: "100px", width: "auto" }} />          </motion.div>
           <p
             style={{
               fontSize: "1rem",
@@ -808,9 +807,12 @@ export default function AuditAnalysis({
             style={{
               marginBottom: "var(--spacing-md)",
               opacity: 0.3,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <Logo size={48} withShadow={true} />
+            <Logo showText={false} style={{ height: "100px", width: "auto" }} />
           </div>
           <h3
             style={{

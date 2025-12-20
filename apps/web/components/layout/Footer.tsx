@@ -47,7 +47,7 @@ export default function Footer() {
         >
           {/* Brand */}
           <div>
-            <Logo size={28} showText={true} />
+          <Logo showText={false} style={{ height: "40px", marginBottom: "10px", width: "auto" }} />
             <p
               style={{
                 fontSize: "0.875rem",

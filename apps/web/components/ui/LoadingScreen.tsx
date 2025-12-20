@@ -38,24 +38,12 @@ export default function LoadingScreen() {
         }}
       >
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.25, 0.25, 0, 1] }}
         >
-          <Logo size={64} withShadow={true} />
-        </motion.div>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          style={{
-            color: "white",
-            fontSize: "1.25rem",
-            fontWeight: 600,
-            textShadow: "0 0 10px rgba(255, 255, 255, 0.3)",
-          }}
-        >
-          ProcurePilot
-        </motion.p>
+          <Logo showText={false} style={{ height: "200px", width: "auto" }} />
+          </motion.div>
       </motion.div>
     </motion.div>
   );

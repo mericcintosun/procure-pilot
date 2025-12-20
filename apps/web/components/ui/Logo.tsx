@@ -1,52 +1,60 @@
 "use client";
 
-import Image from "next/image";
-import { FiZap } from "react-icons/fi";
-
 interface LogoProps {
-  size?: number;
   showText?: boolean;
   className?: string;
   withShadow?: boolean;
+  style?: React.CSSProperties;
 }
 
-export default function Logo({ size = 32, showText = false, className = "", withShadow = false }: LogoProps) {
+export default function Logo({
+  showText = false,
+  className = "",
+  withShadow = false,
+  style = {},
+}: LogoProps) {
   const shadowStyle = withShadow
     ? {
-        filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.2))",
+        filter:
+          "drop-shadow(0 0 8px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.2))",
       }
     : {};
 
-  try {
-    return (
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }} className={className}>
-        <Image
-          src="/images/logos/logo.png"
-          alt="ProcurePilot Logo"
-          width={size}
-          height={size}
-          style={{ objectFit: "contain", ...shadowStyle }}
-        />
-        {showText && (
-          <span style={{ fontSize: `${size * 0.75}px`, fontWeight: 700, color: "inherit" }}>
-            ProcurePilot
-          </span>
-        )}
-      </div>
-    );
-  } catch {
-    return (
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }} className={className}>
-        <div style={shadowStyle}>
-          <FiZap style={{ fontSize: `${size}px`, color: "inherit" }} />
-        </div>
-        {showText && (
-          <span style={{ fontSize: `${size * 0.75}px`, fontWeight: 700, color: "inherit" }}>
-            ProcurePilot
-          </span>
-        )}
-      </div>
-    );
-  }
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: showText ? "0.5rem" : "0",
+        padding: 0,
+        margin: 0,
+      }}
+    >
+      <img
+        src="/images/logos/logo.png"
+        alt="ProcurePilot Logo"
+        className={className}
+        style={{
+          objectFit: "contain",
+          ...shadowStyle,
+          padding: 0,
+          margin: 0,
+          display: "block",
+          width: "auto",
+          ...style,
+        }}
+      />
+      {showText && (
+        <span
+          style={{
+            fontSize: "1.125rem",
+            fontWeight: 700,
+            color: "inherit",
+          }}
+        >
+          ProcurePilot
+        </span>
+      )}
+    </div>
+  );
 }
-

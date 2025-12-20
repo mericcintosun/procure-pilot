@@ -140,8 +140,8 @@ export default function NewAuditPage() {
           marginBottom: "var(--spacing-xl)" 
         }}
       >
-        <Logo size={44} withShadow={true} />
-        <h1 style={{ margin: 0 }}>
+          <Logo showText={false} style={{ height: "100px", width: "auto" }} />
+          <h1 style={{ margin: 0 }}>
           Create Audit Record
         </h1>
       </motion.div>

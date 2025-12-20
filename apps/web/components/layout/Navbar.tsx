@@ -3,7 +3,19 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { FiZap, FiHome, FiBarChart2, FiFile, FiPlus, FiArrowRight, FiMenu, FiX, FiStar, FiTrendingUp, FiTarget } from "react-icons/fi";
+import {
+  FiZap,
+  FiHome,
+  FiBarChart2,
+  FiFile,
+  FiPlus,
+  FiArrowRight,
+  FiMenu,
+  FiX,
+  FiStar,
+  FiTrendingUp,
+  FiTarget,
+} from "react-icons/fi";
 import Button from "../ui/Button";
 import Logo from "../ui/Logo";
 
@@ -13,7 +25,10 @@ export default function Navbar() {
     <motion.nav
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: [0.25, 0.25, 0, 1] as [number, number, number, number] }}
+      transition={{
+        duration: 0.5,
+        ease: [0.25, 0.25, 0, 1] as [number, number, number, number],
+      }}
       style={{
         position: "fixed",
         top: 0,
@@ -43,14 +58,16 @@ export default function Navbar() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "0.5rem",
+            gap: 0,
             textDecoration: "none",
             color: "inherit",
             flexShrink: 0,
             whiteSpace: "nowrap",
+            padding: 0,
+            margin: 0,
           }}
         >
-          <Logo size={32} showText={true} />
+          <Logo showText={false} style={{ height: "40px", width: "auto" }} />
         </Link>
 
         {/* Desktop Navigation */}
@@ -310,194 +327,193 @@ export default function Navbar() {
               overflow: "hidden",
             }}
           >
-          <Link
-            href="/"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              padding: "0.75rem 1rem",
-              color: "var(--text-secondary)",
-              fontWeight: 500,
-              fontSize: "0.875rem",
-              borderRadius: "var(--radius-md)",
-              transition: "all 0.2s ease",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              textDecoration: "none",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--bg-hover)";
-              e.currentTarget.style.color = "var(--primary-light)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "var(--text-secondary)";
-            }}
-          >
-            <FiHome style={{ fontSize: "1rem" }} />
-            Home
-          </Link>
-          <Link
-            href="/rfq"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              padding: "0.75rem 1rem",
-              color: "var(--text-secondary)",
-              fontWeight: 500,
-              fontSize: "0.875rem",
-              borderRadius: "var(--radius-md)",
-              transition: "all 0.2s ease",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              textDecoration: "none",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--bg-hover)";
-              e.currentTarget.style.color = "var(--primary-light)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "var(--text-secondary)";
-            }}
-          >
-            <FiBarChart2 style={{ fontSize: "1rem" }} />
-            RFQ Workspace
-          </Link>
-          <Link
-            href="/audits"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              padding: "0.75rem 1rem",
-              color: "var(--text-secondary)",
-              fontWeight: 500,
-              fontSize: "0.875rem",
-              borderRadius: "var(--radius-md)",
-              transition: "all 0.2s ease",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              textDecoration: "none",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--bg-hover)";
-              e.currentTarget.style.color = "var(--primary-light)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "var(--text-secondary)";
-            }}
-          >
-            <FiFile style={{ fontSize: "1rem" }} />
-            Audits
-          </Link>
-          <Link
-            href="/features"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              padding: "0.75rem 1rem",
-              color: "var(--text-secondary)",
-              fontWeight: 500,
-              fontSize: "0.875rem",
-              borderRadius: "var(--radius-md)",
-              transition: "all 0.2s ease",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              textDecoration: "none",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--bg-hover)";
-              e.currentTarget.style.color = "var(--primary-light)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "var(--text-secondary)";
-            }}
-          >
-            <FiStar style={{ fontSize: "1rem" }} />
-            Features
-          </Link>
-          <Link
-            href="/market-findings"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              padding: "0.75rem 1rem",
-              color: "var(--text-secondary)",
-              fontWeight: 500,
-              fontSize: "0.875rem",
-              borderRadius: "var(--radius-md)",
-              transition: "all 0.2s ease",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              textDecoration: "none",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--bg-hover)";
-              e.currentTarget.style.color = "var(--primary-light)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "var(--text-secondary)";
-            }}
-          >
-            <FiTrendingUp style={{ fontSize: "1rem" }} />
-            Market Findings
-          </Link>
-          <Link
-            href="/next-steps"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              padding: "0.75rem 1rem",
-              color: "var(--text-secondary)",
-              fontWeight: 500,
-              fontSize: "0.875rem",
-              borderRadius: "var(--radius-md)",
-              transition: "all 0.2s ease",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              textDecoration: "none",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--bg-hover)";
-              e.currentTarget.style.color = "var(--primary-light)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "var(--text-secondary)";
-            }}
-          >
-            <FiTarget style={{ fontSize: "1rem" }} />
-            Next Steps
-          </Link>
-          <div
-            style={{
-              marginTop: "var(--spacing-sm)",
-              paddingTop: "var(--spacing-sm)",
-              borderTop: "1px solid var(--border-primary)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "var(--spacing-xs)",
-            }}
-          >
-            <Button
-              href="/audits/new"
-              variant="success"
-              size="sm"
-              icon={<FiPlus style={{ fontSize: "0.875rem" }} />}
-              openInNewTab={false}
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                padding: "0.75rem 1rem",
+                color: "var(--text-secondary)",
+                fontWeight: 500,
+                fontSize: "0.875rem",
+                borderRadius: "var(--radius-md)",
+                transition: "all 0.2s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                textDecoration: "none",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "var(--bg-hover)";
+                e.currentTarget.style.color = "var(--primary-light)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--text-secondary)";
+              }}
             >
-              Create Audit
-            </Button>
-          </div>
+              <FiHome style={{ fontSize: "1rem" }} />
+              Home
+            </Link>
+            <Link
+              href="/rfq"
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                padding: "0.75rem 1rem",
+                color: "var(--text-secondary)",
+                fontWeight: 500,
+                fontSize: "0.875rem",
+                borderRadius: "var(--radius-md)",
+                transition: "all 0.2s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                textDecoration: "none",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "var(--bg-hover)";
+                e.currentTarget.style.color = "var(--primary-light)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--text-secondary)";
+              }}
+            >
+              <FiBarChart2 style={{ fontSize: "1rem" }} />
+              RFQ Workspace
+            </Link>
+            <Link
+              href="/audits"
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                padding: "0.75rem 1rem",
+                color: "var(--text-secondary)",
+                fontWeight: 500,
+                fontSize: "0.875rem",
+                borderRadius: "var(--radius-md)",
+                transition: "all 0.2s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                textDecoration: "none",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "var(--bg-hover)";
+                e.currentTarget.style.color = "var(--primary-light)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--text-secondary)";
+              }}
+            >
+              <FiFile style={{ fontSize: "1rem" }} />
+              Audits
+            </Link>
+            <Link
+              href="/features"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                padding: "0.75rem 1rem",
+                color: "var(--text-secondary)",
+                fontWeight: 500,
+                fontSize: "0.875rem",
+                borderRadius: "var(--radius-md)",
+                transition: "all 0.2s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                textDecoration: "none",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "var(--bg-hover)";
+                e.currentTarget.style.color = "var(--primary-light)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--text-secondary)";
+              }}
+            >
+              <FiStar style={{ fontSize: "1rem" }} />
+              Features
+            </Link>
+            <Link
+              href="/market-findings"
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                padding: "0.75rem 1rem",
+                color: "var(--text-secondary)",
+                fontWeight: 500,
+                fontSize: "0.875rem",
+                borderRadius: "var(--radius-md)",
+                transition: "all 0.2s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                textDecoration: "none",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "var(--bg-hover)";
+                e.currentTarget.style.color = "var(--primary-light)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--text-secondary)";
+              }}
+            >
+              <FiTrendingUp style={{ fontSize: "1rem" }} />
+              Market Findings
+            </Link>
+            <Link
+              href="/next-steps"
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                padding: "0.75rem 1rem",
+                color: "var(--text-secondary)",
+                fontWeight: 500,
+                fontSize: "0.875rem",
+                borderRadius: "var(--radius-md)",
+                transition: "all 0.2s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                textDecoration: "none",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "var(--bg-hover)";
+                e.currentTarget.style.color = "var(--primary-light)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--text-secondary)";
+              }}
+            >
+              <FiTarget style={{ fontSize: "1rem" }} />
+              Next Steps
+            </Link>
+            <div
+              style={{
+                marginTop: "var(--spacing-sm)",
+                paddingTop: "var(--spacing-sm)",
+                borderTop: "1px solid var(--border-primary)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--spacing-xs)",
+              }}
+            >
+              <Button
+                href="/audits/new"
+                variant="success"
+                size="sm"
+                icon={<FiPlus style={{ fontSize: "0.875rem" }} />}
+                openInNewTab={false}
+              >
+                Create Audit
+              </Button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
     </motion.nav>
   );
 }
-

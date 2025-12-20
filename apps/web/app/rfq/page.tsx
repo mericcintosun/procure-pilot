@@ -274,8 +274,8 @@ export default function RFQPage() {
               marginBottom: 8,
             }}
           >
-            <Logo size={48} withShadow={true} />
-            <h1
+          <Logo showText={false} style={{ height: "40px", width: "auto" }} />
+          <h1
               style={{
                 margin: 0,
                 color: "#f9fafb",

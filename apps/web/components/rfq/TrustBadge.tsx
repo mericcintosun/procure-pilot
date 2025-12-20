@@ -20,7 +20,7 @@ export function TrustBadge() {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-        <Logo size={24} withShadow={true} />
+        <Logo showText={false} style={{ height: "40px", width: "auto" }} />
         <h3 style={{ margin: 0, color: "#d1fae5", fontSize: 16, fontWeight: 600 }}>Secure Processing</h3>
       </div>
       <div style={{ display: "grid", gap: 12 }}>

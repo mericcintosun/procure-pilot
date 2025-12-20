@@ -49,8 +49,8 @@ export default async function AuditDetailPage({ params }: { params: { id: string
         ← Back to Audits
       </Link>
       <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-md)", marginTop: "var(--spacing-sm)", marginBottom: "var(--spacing-xl)", flexWrap: "wrap" }}>
-        <Logo size={40} withShadow={true} />
-        <h1 style={{ margin: 0, fontSize: "clamp(1.5rem, 5vw, 2rem)", wordBreak: "break-word" }}>
+      <Logo showText={false} style={{ height: "100px", width: "auto" }} />
+      <h1 style={{ margin: 0, fontSize: "clamp(1.5rem, 5vw, 2rem)", wordBreak: "break-word" }}>
           Audit Record: {audit.ID}
         </h1>
       </div>

@@ -71,8 +71,8 @@ export default function NextStepsPage() {
             flexWrap: "wrap",
           }}
         >
-          <Logo size={48} withShadow={true} />
-        </div>
+          <Logo showText={false} style={{ height: "100px", width: "auto" }} />
+          </div>
         <h1
           style={{
             margin: 0,
