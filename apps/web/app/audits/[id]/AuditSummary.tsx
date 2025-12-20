@@ -34,6 +34,9 @@ export default function AuditSummary({
           if (data.exists && data.analysis) {
             setAnalysis(data.analysis);
           }
+        } else if (r.status === 404) {
+          // 404 is expected if no analysis exists yet - silently ignore
+          return;
         }
       } catch (e: any) {
         // Ignore errors

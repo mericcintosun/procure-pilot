@@ -30,11 +30,12 @@ export default function AuditAnalysis({
           if (data.exists && data.analysis) {
             setAnalysis(data.analysis);
           }
+        } else if (r.status === 404) {
+          // 404 is expected if no analysis exists yet - silently ignore
         }
         // 404 is expected if no analysis exists yet, so we don't treat it as an error
       } catch (e: any) {
-        console.warn("Could not load existing analysis:", e.message);
-        // Don't set error state - it's okay if analysis doesn't exist yet
+        // Silently ignore errors - it's okay if analysis doesn't exist yet
       } finally {
         setLoadingExisting(false);
       }

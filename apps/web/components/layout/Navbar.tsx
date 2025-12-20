@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { FiZap, FiHome, FiBarChart2, FiFile, FiPlus, FiArrowRight, FiMenu, FiX, FiStar } from "react-icons/fi";
+import { FiZap, FiHome, FiBarChart2, FiFile, FiPlus, FiArrowRight, FiMenu, FiX, FiStar, FiTrendingUp } from "react-icons/fi";
 import Button from "../ui/Button";
 import Logo from "../ui/Logo";
 
@@ -165,6 +165,32 @@ export default function Navbar() {
           >
             <FiStar style={{ fontSize: "0.875rem" }} />
             Features
+          </Link>
+          <Link
+            href="/market-findings"
+            style={{
+              padding: "0.5rem 1rem",
+              color: "var(--text-secondary)",
+              fontWeight: 500,
+              fontSize: "0.875rem",
+              borderRadius: "var(--radius-md)",
+              transition: "all 0.2s ease",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              textDecoration: "none",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--bg-hover)";
+              e.currentTarget.style.color = "var(--primary-light)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = "var(--text-secondary)";
+            }}
+          >
+            <FiTrendingUp style={{ fontSize: "0.875rem" }} />
+            Market Findings
           </Link>
         </div>
 
@@ -346,6 +372,33 @@ export default function Navbar() {
           >
             <FiStar style={{ fontSize: "1rem" }} />
             Features
+          </Link>
+          <Link
+            href="/market-findings"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              padding: "0.75rem 1rem",
+              color: "var(--text-secondary)",
+              fontWeight: 500,
+              fontSize: "0.875rem",
+              borderRadius: "var(--radius-md)",
+              transition: "all 0.2s ease",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              textDecoration: "none",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--bg-hover)";
+              e.currentTarget.style.color = "var(--primary-light)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = "var(--text-secondary)";
+            }}
+          >
+            <FiTrendingUp style={{ fontSize: "1rem" }} />
+            Market Findings
           </Link>
           <div
             style={{
