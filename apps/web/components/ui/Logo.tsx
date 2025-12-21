@@ -20,7 +20,7 @@ export default function Logo({
       }
     : {};
 
-  return (
+    return (
     <div
       style={{
         display: "flex",
@@ -31,8 +31,8 @@ export default function Logo({
       }}
     >
       <img
-        src="/images/logos/logo.png"
-        alt="ProcurePilot Logo"
+          src="/images/logos/logo.png"
+          alt="ProcurePilot Logo"
         className={className}
         style={{
           objectFit: "contain",
@@ -43,8 +43,8 @@ export default function Logo({
           width: "auto",
           ...style,
         }}
-      />
-      {showText && (
+        />
+        {showText && (
         <span
           style={{
             fontSize: "1.125rem",
@@ -52,9 +52,9 @@ export default function Logo({
             color: "inherit",
           }}
         >
-          ProcurePilot
-        </span>
-      )}
-    </div>
-  );
-}
+            ProcurePilot
+          </span>
+        )}
+      </div>
+    );
+  }

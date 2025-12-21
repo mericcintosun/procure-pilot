@@ -503,6 +503,428 @@ export default function NextStepsPage() {
           }}
         />
 
+        {/* Competitive Matrix */}
+        <motion.section variants={itemVariants}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--spacing-md)",
+              marginBottom: "var(--spacing-xl)",
+            }}
+          >
+            <div
+              style={{
+                padding: "var(--spacing-md)",
+                background:
+                  "linear-gradient(135deg, var(--primary), var(--primary-dark))",
+                borderRadius: "var(--radius-lg)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <FiFileText
+                style={{
+                  fontSize: "1.5rem",
+                  color: "white",
+                }}
+              />
+            </div>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: "clamp(1.5rem, 4vw, 2rem)",
+                fontWeight: 700,
+                color: "white",
+              }}
+            >
+              Competitive Matrix
+            </h2>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            style={{
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch",
+              marginBottom: "var(--spacing-xl)",
+            }}
+          >
+            <table
+              style={{
+                width: "100%",
+                minWidth: "900px",
+                borderCollapse: "collapse",
+                background: "rgba(30, 41, 59, 0.6)",
+                borderRadius: "var(--radius-lg)",
+                overflow: "hidden",
+                border: "1px solid var(--border-primary)",
+                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3)",
+              }}
+            >
+              <thead>
+                <tr
+                  style={{
+                    background: "linear-gradient(135deg, #1e293b, #334155)",
+                    borderBottom: "2px solid var(--border-primary)",
+                  }}
+                >
+                  <th
+                    style={{
+                      padding: "var(--spacing-md)",
+                      textAlign: "left",
+                      color: "white",
+                      fontWeight: 700,
+                      fontSize: "0.95rem",
+                      borderRight: "1px solid var(--border-primary)",
+                    }}
+                  >
+                    Feature
+                  </th>
+                  <th
+                    style={{
+                      padding: "var(--spacing-md)",
+                      textAlign: "center",
+                      color: "white",
+                      fontWeight: 700,
+                      fontSize: "0.95rem",
+                      borderRight: "1px solid var(--border-primary)",
+                      background: "rgba(0, 112, 243, 0.2)",
+                    }}
+                  >
+                    ProcurePilot
+                  </th>
+                  <th
+                    style={{
+                      padding: "var(--spacing-md)",
+                      textAlign: "center",
+                      color: "white",
+                      fontWeight: 600,
+                      fontSize: "0.9rem",
+                      borderRight: "1px solid var(--border-primary)",
+                    }}
+                  >
+                    Excel + Manual Process
+                  </th>
+                  <th
+                    style={{
+                      padding: "var(--spacing-md)",
+                      textAlign: "center",
+                      color: "white",
+                      fontWeight: 600,
+                      fontSize: "0.9rem",
+                      borderRight: "1px solid var(--border-primary)",
+                    }}
+                  >
+                    Procurement Suites
+                    <br />
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                        fontWeight: 400,
+                        opacity: 0.8,
+                      }}
+                    >
+                      (SAP Ariba, Coupa, Ivalua, JAGGAER)
+                    </span>
+                  </th>
+                  <th
+                    style={{
+                      padding: "var(--spacing-md)",
+                      textAlign: "center",
+                      color: "white",
+                      fontWeight: 600,
+                      fontSize: "0.9rem",
+                    }}
+                  >
+                    Document AI Tools
+                    <br />
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                        fontWeight: 400,
+                        opacity: 0.8,
+                      }}
+                    >
+                      (ContractPodAi, Lexion)
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    feature: "AI-Powered Structured Data Extraction",
+                    procurepilot: "check",
+                    excel: "cross",
+                    suites: "limited",
+                    docAI: "check",
+                  },
+                  {
+                    feature: "Side-by-Side Comparison Table",
+                    procurepilot: "check",
+                    excel: "limited",
+                    suites: "check",
+                    docAI: "cross",
+                  },
+                  {
+                    feature: "Risk Scoring & Red Flag Detection",
+                    procurepilot: "check",
+                    excel: "cross",
+                    suites: "limited",
+                    docAI: "limited",
+                  },
+                  {
+                    feature: "Evidence Tracking (Page-level Citations)",
+                    procurepilot: "check",
+                    excel: "cross",
+                    suites: "cross",
+                    docAI: "limited",
+                  },
+                  {
+                    feature: "Customizable Weighted Scoring",
+                    procurepilot: "check",
+                    excel: "limited",
+                    suites: "limited",
+                    docAI: "cross",
+                  },
+                  {
+                    feature: "Blockchain Audit Trail (Hyperledger Fabric)",
+                    procurepilot: "check",
+                    excel: "cross",
+                    suites: "cross",
+                    docAI: "cross",
+                  },
+                  {
+                    feature: "GDPR/KVKK Compliance Check",
+                    procurepilot: "check",
+                    excel: "cross",
+                    suites: "limited",
+                    docAI: "limited",
+                  },
+                ].map((row, index) => (
+                  <tr
+                    key={index}
+                    style={{
+                      borderBottom:
+                        index < 6 ? "1px solid var(--border-primary)" : "none",
+                      background:
+                        index % 2 === 0
+                          ? "rgba(15, 23, 42, 0.3)"
+                          : "transparent",
+                    }}
+                  >
+                    <td
+                      style={{
+                        padding: "var(--spacing-md)",
+                        color: "var(--text-secondary)",
+                        fontSize: "0.9rem",
+                        fontWeight: 500,
+                        borderRight: "1px solid var(--border-primary)",
+                      }}
+                    >
+                      {row.feature}
+                    </td>
+                    <td
+                      style={{
+                        padding: "var(--spacing-md)",
+                        textAlign: "center",
+                        borderRight: "1px solid var(--border-primary)",
+                        background: "rgba(0, 112, 243, 0.1)",
+                      }}
+                    >
+                      {row.procurepilot === "check" ? (
+                        <FiCheckCircle
+                          style={{
+                            fontSize: "1.5rem",
+                            color: "#22c55e",
+                          }}
+                        />
+                      ) : row.procurepilot === "limited" ? (
+                        <span
+                          style={{
+                            color: "#f59e0b",
+                            fontSize: "0.85rem",
+                            fontWeight: 500,
+                          }}
+                        >
+                          Limited
+                        </span>
+                      ) : (
+                        <span
+                          style={{
+                            fontSize: "1.5rem",
+                            color: "#ef4444",
+                          }}
+                        >
+                          ×
+                        </span>
+                      )}
+                    </td>
+                    <td
+                      style={{
+                        padding: "var(--spacing-md)",
+                        textAlign: "center",
+                        borderRight: "1px solid var(--border-primary)",
+                      }}
+                    >
+                      {row.excel === "check" ? (
+                        <FiCheckCircle
+                          style={{
+                            fontSize: "1.5rem",
+                            color: "#22c55e",
+                          }}
+                        />
+                      ) : row.excel === "limited" ? (
+                        <span
+                          style={{
+                            color: "#f59e0b",
+                            fontSize: "0.85rem",
+                            fontWeight: 500,
+                          }}
+                        >
+                          Limited
+                        </span>
+                      ) : (
+                        <span
+                          style={{
+                            fontSize: "1.5rem",
+                            color: "#ef4444",
+                          }}
+                        >
+                          ×
+                        </span>
+                      )}
+                    </td>
+                    <td
+                      style={{
+                        padding: "var(--spacing-md)",
+                        textAlign: "center",
+                        borderRight: "1px solid var(--border-primary)",
+                      }}
+                    >
+                      {row.suites === "check" ? (
+                        <FiCheckCircle
+                          style={{
+                            fontSize: "1.5rem",
+                            color: "#22c55e",
+                          }}
+                        />
+                      ) : row.suites === "limited" ? (
+                        <span
+                          style={{
+                            color: "#f59e0b",
+                            fontSize: "0.85rem",
+                            fontWeight: 500,
+                          }}
+                        >
+                          Limited
+                        </span>
+                      ) : (
+                        <span
+                          style={{
+                            fontSize: "1.5rem",
+                            color: "#ef4444",
+                          }}
+                        >
+                          ×
+                        </span>
+                      )}
+                    </td>
+                    <td
+                      style={{
+                        padding: "var(--spacing-md)",
+                        textAlign: "center",
+                      }}
+                    >
+                      {row.docAI === "check" ? (
+                        <FiCheckCircle
+                          style={{
+                            fontSize: "1.5rem",
+                            color: "#22c55e",
+                          }}
+                        />
+                      ) : row.docAI === "limited" ? (
+                        <span
+                          style={{
+                            color: "#f59e0b",
+                            fontSize: "0.85rem",
+                            fontWeight: 500,
+                          }}
+                        >
+                          Limited
+                        </span>
+                      ) : (
+                        <span
+                          style={{
+                            fontSize: "1.5rem",
+                            color: "#ef4444",
+                          }}
+                        >
+                          ×
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{
+              padding: "var(--spacing-lg)",
+              background: "rgba(0, 112, 243, 0.1)",
+              borderRadius: "var(--radius-lg)",
+              border: "1px solid rgba(0, 112, 243, 0.3)",
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                color: "var(--text-secondary)",
+                fontSize: "0.9rem",
+                lineHeight: 1.7,
+                textAlign: "center",
+              }}
+            >
+              <strong style={{ color: "white" }}>ProcurePilot</strong> is the
+              only solution that combines{" "}
+              <strong style={{ color: "var(--primary-light)" }}>
+                AI-powered extraction
+              </strong>
+              ,{" "}
+              <strong style={{ color: "var(--primary-light)" }}>
+                evidence tracking
+              </strong>
+              , and{" "}
+              <strong style={{ color: "var(--primary-light)" }}>
+                blockchain audit trail
+              </strong>{" "}
+              in a single platform, making it the most comprehensive solution
+              for procurement decision-making with full transparency and
+              accountability.
+            </p>
+          </motion.div>
+        </motion.section>
+
+        {/* Divider */}
+        <motion.div
+          variants={itemVariants}
+          style={{
+            height: "2px",
+            background:
+              "linear-gradient(90deg, transparent, var(--border-primary), transparent)",
+            margin: "var(--spacing-xl) 0",
+          }}
+        />
+
         {/* Next Steps */}
         <motion.section variants={itemVariants}>
           <div
