@@ -302,7 +302,7 @@ rfqRouter.post("/upload", upload.array("files", 3), async (req, res) => {
 /**
  * POST /rfq/analyze
  * Analyze uploaded PDFs and extract normalized offer data
- * body: { documents: [{ filename, text }], weights?: { price?: number, risk?: number, speed?: number } }
+ * body: { documents: [{ filename, text }], weights?: { price?: number, feasibility?: number, speed?: number } }
  */
 rfqRouter.post("/analyze", async (req, res) => {
   try {
@@ -390,7 +390,7 @@ rfqRouter.post("/analyze", async (req, res) => {
     }
 
     // Calculate recommendation based on weights
-    const defaultWeights = { price: 0.4, risk: 0.4, speed: 0.2 };
+    const defaultWeights = { price: 0.4, feasibility: 0.4, speed: 0.2 };
     const finalWeights = { ...defaultWeights, ...weights };
 
     // Filter out offers with errors, but log them for debugging
@@ -484,24 +484,18 @@ rfqRouter.post("/analyze", async (req, res) => {
 
         const weightedScore =
           priceScore * finalWeights.price +
-          feasibilityScore * finalWeights.risk +
+          feasibilityScore * finalWeights.feasibility +
           speedScore * finalWeights.speed;
 
         return {
           ...offer,
           scores: {
             price: Math.max(0, Math.min(100, priceScore)),
-            risk: Math.max(0, Math.min(100, feasibilityScore)), // Feasibility score (higher = more feasible)
+            feasibility: Math.max(0, Math.min(100, feasibilityScore)), // Feasibility score (higher = more feasible)
             speed: Math.max(0, Math.min(100, speedScore)),
             weighted: Math.max(0, Math.min(100, weightedScore)),
           },
-          riskScoreDetails: feasibilityScoreResult
-            ? {
-                riskScore: feasibilityScoreResult.feasibilityScore, // Keep field name for backward compatibility
-                components: feasibilityScoreResult.components,
-                evidence: feasibilityScoreResult.evidence,
-              }
-            : undefined,
+          feasibilityScoreDetails: feasibilityScoreResult || undefined,
         };
       })
       .sort((a, b) => b.scores.weighted - a.scores.weighted);

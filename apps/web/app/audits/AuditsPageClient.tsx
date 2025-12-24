@@ -91,7 +91,7 @@ export default function AuditsPageClient({
   }, [initialAudits, searchQuery, filterType, sortBy]);
 
   const getFeasibilityScore = (audit: any): number | null => {
-    return audit.analysis?.riskScore ?? null; // Field name kept for backward compatibility, but value is feasibility score
+    return audit.analysis?.feasibilityScore ?? null;
   };
 
   const getRiskCount = (audit: any): number => {

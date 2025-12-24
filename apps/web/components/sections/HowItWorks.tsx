@@ -32,7 +32,7 @@ export default function HowItWorks() {
       number: "02",
       title: "Compare",
       description:
-        "Get weighted recommendations based on your priorities (price, risk, speed). Every extracted value includes page-level evidence with direct quotes from the source document.",
+        "Get weighted recommendations based on your priorities (price, feasibility, speed). Every extracted value includes page-level evidence with direct quotes from the source document.",
       color: "var(--success)",
     },
     {

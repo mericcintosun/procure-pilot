@@ -93,8 +93,8 @@ export default function AuditAnalysis({
       }
 
       // Validate required fields
-      if (!analysisData.riskScore && analysisData.riskScore !== 0) {
-        console.warn("Analysis missing riskScore:", analysisData);
+      if (!analysisData.feasibilityScore && analysisData.feasibilityScore !== 0) {
+        console.warn("Analysis missing feasibilityScore:", analysisData);
       }
 
       setAnalysis(analysisData);
@@ -381,7 +381,7 @@ export default function AuditAnalysis({
           )}
 
           {/* Feasibility Score */}
-          {analysis.riskScore !== undefined && analysis.riskScore !== null && (
+          {analysis.feasibilityScore !== undefined && analysis.feasibilityScore !== null && (
             <div>
               <h3
                 style={{
@@ -407,9 +407,9 @@ export default function AuditAnalysis({
                     height: "120px",
                     borderRadius: "50%",
                     background: `conic-gradient(${getFeasibilityColor(
-                      analysis.riskScore
-                    )} 0% ${analysis.riskScore}%, var(--gray-200) ${
-                      analysis.riskScore
+                      analysis.feasibilityScore
+                    )} 0% ${analysis.feasibilityScore}%, var(--gray-200) ${
+                      analysis.feasibilityScore
                     }% 100%)`,
                     display: "flex",
                     alignItems: "center",
@@ -420,18 +420,18 @@ export default function AuditAnalysis({
                     boxShadow: "var(--shadow-md)",
                   }}
                 >
-                  {analysis.riskScore}
+                  {analysis.feasibilityScore}
                 </div>
                 <div>
                   <div
                     style={{
                       fontSize: "1.5rem",
                       fontWeight: 700,
-                      color: getFeasibilityColor(analysis.riskScore),
+                      color: getFeasibilityColor(analysis.feasibilityScore),
                       marginBottom: "var(--spacing-xs)",
                     }}
                   >
-                    {getFeasibilityLabel(analysis.riskScore)}
+                    {getFeasibilityLabel(analysis.feasibilityScore)}
                   </div>
                   {analysis.confidence && (
                     <div

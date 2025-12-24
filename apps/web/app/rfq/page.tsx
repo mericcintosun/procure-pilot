@@ -30,7 +30,7 @@ export default function RFQPage() {
   const [error, setError] = useState<string | null>(null);
   const [weights, setWeights] = useState<Weights>({
     price: 0.4,
-    risk: 0.4,
+    feasibility: 0.4,
     speed: 0.2,
   });
   const [showEvidence, setShowEvidence] = useState<EvidenceState | null>(null);
@@ -132,7 +132,7 @@ export default function RFQPage() {
   function calculateScore(
     offer: Offer,
     weights: Weights
-  ): { price: number; risk: number; speed: number; weighted: number } {
+  ): { price: number; feasibility: number; speed: number; weighted: number } {
     const priceScore = offer.totalPrice
       ? Math.max(
           0,
@@ -144,8 +144,8 @@ export default function RFQPage() {
       : 50;
 
     // Use new feasibility scoring system if available, otherwise fallback to old calculation
-    const feasibilityScore = offer.riskScoreDetails
-      ? offer.riskScoreDetails.feasibilityScore // 0-100, higher = more feasible
+    const feasibilityScore = offer.feasibilityScoreDetails
+      ? offer.feasibilityScoreDetails.feasibilityScore // 0-100, higher = more feasible
       : Math.max(0, Math.min(100, 100 - (offer.redFlags?.length || 0) * 20));
 
     const speedScore = offer.leadTimeDays
@@ -158,12 +158,12 @@ export default function RFQPage() {
     // Feasibility score is already in the correct direction (higher = better)
     const weightedScore =
       priceScore * weights.price +
-      feasibilityScore * weights.risk +
+      feasibilityScore * weights.feasibility +
       speedScore * weights.speed;
 
     return {
       price: Math.max(0, Math.min(100, priceScore)),
-      risk: Math.max(0, Math.min(100, feasibilityScore)), // Feasibility score (higher = more feasible)
+      feasibility: Math.max(0, Math.min(100, feasibilityScore)), // Feasibility score (higher = more feasible)
       speed: Math.max(0, Math.min(100, speedScore)),
       weighted: Math.max(0, Math.min(100, weightedScore)),
     };

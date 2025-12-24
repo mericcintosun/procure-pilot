@@ -650,7 +650,7 @@ export default function MarketFindingsPage() {
                     flexShrink: 0,
                   }}
                 />
-                <span>Page number + quote for every key field and risk</span>
+                <span>Page number + quote for every key field and feasibility factor</span>
               </li>
               <li
                 style={{

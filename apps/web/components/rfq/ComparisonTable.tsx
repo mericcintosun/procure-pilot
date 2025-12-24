@@ -227,7 +227,7 @@ export function ComparisonTable({
                             {offer.scores.weighted.toFixed(1)}/100
                           </div>
                           <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>
-                            P:{Math.round(offer.scores.price)} R:{Math.round(offer.scores.risk)} S:
+                            P:{Math.round(offer.scores.price)} F:{Math.round(offer.scores.feasibility)} S:
                             {Math.round(offer.scores.speed)}
                           </div>
                         </div>

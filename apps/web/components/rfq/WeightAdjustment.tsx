@@ -12,11 +12,11 @@ interface WeightAdjustmentProps {
 }
 
 function normalizeWeights(w: Weights): Weights {
-  const total = w.price + w.risk + w.speed;
-  if (total === 0) return { price: 0.33, risk: 0.33, speed: 0.34 };
+  const total = w.price + w.feasibility + w.speed;
+  if (total === 0) return { price: 0.33, feasibility: 0.33, speed: 0.34 };
   return {
     price: w.price / total,
-    risk: w.risk / total,
+    feasibility: w.feasibility / total,
     speed: w.speed / total,
   };
 }
@@ -64,7 +64,7 @@ export function WeightAdjustment({ weights, setWeights, loading, onRescore }: We
         Adjust Scoring Weights
       </motion.h2>
       <p style={{ color: "#9ca3af", marginBottom: 20, fontSize: 14, lineHeight: 1.6 }}>
-        Customize how offers are ranked by adjusting the importance of price, risk, and delivery speed.
+        Customize how offers are ranked by adjusting the importance of price, feasibility, and delivery speed.
       </p>
       
       <div style={{ marginBottom: 16 }}>
@@ -84,18 +84,18 @@ export function WeightAdjustment({ weights, setWeights, loading, onRescore }: We
             Cost-first
           </button>
           <button
-            onClick={() => handlePresetChange("risk-first")}
+            onClick={() => handlePresetChange("feasibility-first")}
             style={{
               padding: "8px 16px",
-              background: preset === "risk-first" ? "#3b82f6" : "#374151",
-              color: preset === "risk-first" ? "white" : "#d1d5db",
+              background: preset === "feasibility-first" ? "#3b82f6" : "#374151",
+              color: preset === "feasibility-first" ? "white" : "#d1d5db",
               border: "1px solid #4b5563",
               borderRadius: 6,
               cursor: "pointer",
               fontSize: 14,
             }}
           >
-            Risk-first
+            Feasibility-first
           </button>
           <button
             onClick={() => handlePresetChange("speed-first")}
@@ -127,7 +127,7 @@ export function WeightAdjustment({ weights, setWeights, loading, onRescore }: We
           </button>
         </div>
         <div style={{ fontSize: 12, color: "#9ca3af" }}>
-          Total: {(localWeights.price + localWeights.risk + localWeights.speed).toFixed(2)} (auto-normalized to 1.0)
+          Total: {(localWeights.price + localWeights.feasibility + localWeights.speed).toFixed(2)} (auto-normalized to 1.0)
         </div>
       </div>
 
@@ -146,9 +146,9 @@ export function WeightAdjustment({ weights, setWeights, loading, onRescore }: We
               onChange={(e) => {
                 const price = parseFloat(e.target.value);
                 const remaining = 1 - price;
-                const risk = (remaining * localWeights.risk) / (localWeights.risk + localWeights.speed || 1);
-                const speed = remaining - risk;
-                const newWeights = normalizeWeights({ price, risk, speed });
+                const feasibility = (remaining * localWeights.feasibility) / (localWeights.feasibility + localWeights.speed || 1);
+                const speed = remaining - feasibility;
+                const newWeights = normalizeWeights({ price, feasibility, speed });
                 setLocalWeights(newWeights);
                 setWeights(newWeights);
               }}
@@ -157,20 +157,20 @@ export function WeightAdjustment({ weights, setWeights, loading, onRescore }: We
           </div>
           <div>
             <label style={{ display: "block", marginBottom: 4, color: "#f9fafb" }}>
-              Risk Weight: {localWeights.risk.toFixed(2)} ({Math.round(localWeights.risk * 100)}%)
+              Feasibility Weight: {localWeights.feasibility.toFixed(2)} ({Math.round(localWeights.feasibility * 100)}%)
             </label>
             <input
               type="range"
               min="0"
               max="1"
               step="0.05"
-              value={localWeights.risk}
+              value={localWeights.feasibility}
               onChange={(e) => {
-                const risk = parseFloat(e.target.value);
-                const remaining = 1 - risk;
+                const feasibility = parseFloat(e.target.value);
+                const remaining = 1 - feasibility;
                 const price = (remaining * localWeights.price) / (localWeights.price + localWeights.speed || 1);
                 const speed = remaining - price;
-                const newWeights = normalizeWeights({ price, risk, speed });
+                const newWeights = normalizeWeights({ price, feasibility, speed });
                 setLocalWeights(newWeights);
                 setWeights(newWeights);
               }}
@@ -190,9 +190,9 @@ export function WeightAdjustment({ weights, setWeights, loading, onRescore }: We
               onChange={(e) => {
                 const speed = parseFloat(e.target.value);
                 const remaining = 1 - speed;
-                const price = (remaining * localWeights.price) / (localWeights.price + localWeights.risk || 1);
-                const risk = remaining - price;
-                const newWeights = normalizeWeights({ price, risk, speed });
+                const price = (remaining * localWeights.price) / (localWeights.price + localWeights.feasibility || 1);
+                const feasibility = remaining - price;
+                const newWeights = normalizeWeights({ price, feasibility, speed });
                 setLocalWeights(newWeights);
                 setWeights(newWeights);
               }}
@@ -203,7 +203,7 @@ export function WeightAdjustment({ weights, setWeights, loading, onRescore }: We
       ) : (
         <div style={{ padding: 12, background: "#374151", borderRadius: 6, marginBottom: 12 }}>
           <div style={{ fontSize: 14, color: "#d1d5db" }}>
-            <strong>Current weights:</strong> Price {Math.round(localWeights.price * 100)}% / Risk {Math.round(localWeights.risk * 100)}% / Speed {Math.round(localWeights.speed * 100)}%
+            <strong>Current weights:</strong> Price {Math.round(localWeights.price * 100)}% / Feasibility {Math.round(localWeights.feasibility * 100)}% / Speed {Math.round(localWeights.speed * 100)}%
           </div>
         </div>
       )}

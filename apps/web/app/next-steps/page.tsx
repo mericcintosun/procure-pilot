@@ -671,7 +671,7 @@ export default function NextStepsPage() {
                     docAI: "cross",
                   },
                   {
-                    feature: "Risk Scoring & Red Flag Detection",
+                    feature: "Feasibility Scoring & Red Flag Detection",
                     procurepilot: "check",
                     excel: "cross",
                     suites: "limited",

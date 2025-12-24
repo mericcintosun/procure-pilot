@@ -56,17 +56,17 @@ export interface Offer {
   evidence?: Evidence[];
   scores?: {
     price: number;
-    risk: number; // 0-100, higher = more feasible (kept as "risk" for backward compatibility in UI)
+    feasibility: number; // 0-100, higher = more feasible
     speed: number;
     weighted: number;
   };
-  riskScoreDetails?: FeasibilityScoreDetails; // Kept name for backward compatibility
+  feasibilityScoreDetails?: FeasibilityScoreDetails;
   error?: string;
 }
 
 export interface Weights {
   price: number;
-  risk: number;
+  feasibility: number;
   speed: number;
 }
 
@@ -77,13 +77,13 @@ export interface EvidenceState {
 
 export type WeightPreset =
   | "cost-first"
-  | "risk-first"
+  | "feasibility-first"
   | "speed-first"
   | "custom";
 
 export const WEIGHT_PRESETS: Record<WeightPreset, Weights> = {
-  "cost-first": { price: 0.6, risk: 0.2, speed: 0.2 },
-  "risk-first": { price: 0.2, risk: 0.6, speed: 0.2 },
-  "speed-first": { price: 0.2, risk: 0.2, speed: 0.6 },
-  custom: { price: 0.4, risk: 0.4, speed: 0.2 },
+  "cost-first": { price: 0.6, feasibility: 0.2, speed: 0.2 },
+  "feasibility-first": { price: 0.2, feasibility: 0.6, speed: 0.2 },
+  "speed-first": { price: 0.2, feasibility: 0.2, speed: 0.6 },
+  custom: { price: 0.4, feasibility: 0.4, speed: 0.2 },
 };

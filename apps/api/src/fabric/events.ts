@@ -68,7 +68,7 @@ export async function startAutoAnalysis() {
           const rulesFeasibilityScore = 100 - rulesResult.score;
           const combinedFeasibilityScore = Math.min(
             rulesFeasibilityScore,
-            analysis.riskScore // Already feasibility score from Gemini
+            analysis.feasibilityScore // Already feasibility score from Gemini
           );
 
           // Store analysis in Fabric using StoreAnalysis (idempotent)
@@ -76,7 +76,7 @@ export async function startAutoAnalysis() {
             auditId: audit.ID,
             analysis: {
               ...analysis,
-              riskScore: combinedFeasibilityScore, // Store as feasibility score (field name kept for backward compatibility)
+              feasibilityScore: combinedFeasibilityScore,
               rulesResult,
             },
             metadata,

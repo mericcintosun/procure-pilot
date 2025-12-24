@@ -59,12 +59,12 @@ export const AuditAnalysisSchema = z.object({
   summary: z
     .string()
     .describe("Brief summary of the audit record (2-3 sentences)"),
-  riskScore: z
+  feasibilityScore: z
     .number()
     .min(0)
     .max(100)
     .describe(
-      "Feasibility score from 0 (not feasible) to 100 (highly feasible). Calculated as inverse of risk factors."
+      "Feasibility score from 0 (not feasible) to 100 (highly feasible). Higher score = more feasible/less risky."
     ),
   reasons: z
     .array(z.string())
@@ -440,7 +440,7 @@ function fallbackAnalyzeAudit(
         ? ` with amount ${auditData.amount} ${auditData.currency || ""}`
         : ""
     }${auditData.date ? `. Date: ${auditData.date}` : ""}.`,
-    riskScore: feasibilityScore, // Store as feasibility score (field name kept for backward compatibility)
+    feasibilityScore: feasibilityScore,
     reasons,
     suggestedNextSteps,
     confidence: 60,
@@ -517,7 +517,7 @@ Return your analysis as a structured JSON object.
           type: "string",
           description: "Brief summary of the audit record (2-3 sentences)",
         },
-        riskScore: {
+        feasibilityScore: {
           type: "number",
           description:
             "Feasibility score from 0 (not feasible) to 100 (highly feasible). Higher = more feasible/less risky.",
@@ -546,7 +546,7 @@ Return your analysis as a structured JSON object.
           description: "Any policy compliance flags",
         },
       },
-      required: ["summary", "riskScore", "reasons", "suggestedNextSteps"],
+      required: ["summary", "feasibilityScore", "reasons", "suggestedNextSteps"],
     };
 
     const result = await model.generateContent({
@@ -580,7 +580,7 @@ Return your analysis as a structured JSON object.
       analysisTimestamp: new Date().toISOString(),
       confidence: validated.confidence,
       rulesScore,
-      llmScore: validated.riskScore,
+      llmScore: validated.feasibilityScore,
     };
 
     // Cache disabled - return fresh result
